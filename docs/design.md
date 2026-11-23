@@ -30,6 +30,3 @@ Targets and aim drills played while moving. Stats, sensitivity and FOV matching 
 
 ## Quality bar
 One finished piece first: a movement test course that feels right before anything else is built (M1).
-
-## Non-goals (for now)
-Multiplayer, story, monetization.
