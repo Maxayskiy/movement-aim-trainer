@@ -16,3 +16,7 @@ config/features=PackedStringArray("4.7", "Forward Plus")
 [debug]
 
 gdscript/warnings/untyped_declaration=2
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
