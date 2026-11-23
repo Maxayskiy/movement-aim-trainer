@@ -1,0 +1,23 @@
+# Godot cache (rebuilt on open). Keep *.uid and *.import files: they are committed.
+.godot/
+
+# Exports and builds
+exports/
+builds/
+*.pck
+*.exe
+
+# Secrets
+.env
+.env.*
+
+# Python tools (gdtoolkit)
+.venv/
+__pycache__/
+
+# Personal Claude Code settings
+.claude/settings.local.json
+
+# OS clutter
+Thumbs.db
+.DS_Store
