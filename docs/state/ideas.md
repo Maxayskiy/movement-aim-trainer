@@ -24,3 +24,9 @@ _None._ (Decided: don't change the Teach skill. Box Gym teaching uses docs/box-g
 ## Backlog
 
 - First real feature after learning: probably bhop + air strafing on the movement test course (the design doc's quality bar).
+- Movement gotchas. Put these in the first movement plan:
+  - Physics tick at 128 Hz (`physics/common/physics_ticks_per_second`). The project still uses the default 60.
+  - `Input.use_accumulated_input = false`, so mouse look reads every input event.
+  - Test SUCC's box hull on floor seams and ramp edges. It can snag there.
+  - Use `move_and_collide` (not only `move_and_slide`) for wall bounce, superglide and grapple, where we need the exact collision normal.
+  - SUCC's input actions (forward, back, left, right, jump, crouch, sprint) aren't defined in the Input Map yet. Godot warns about this on every boot.
