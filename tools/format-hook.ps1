@@ -13,11 +13,19 @@ $file = $data.tool_input.file_path
 if (-not $file -or -not $file.EndsWith('.gd')) { exit 0 }
 if (-not (Test-Path $file)) { exit 0 }
 
-# Never touch third-party code.
+# Never touch third-party code: skip any file inside an addons folder,
+# including the addons folder of a git worktree.
 $full = (Resolve-Path $file).Path
-if ($full -like (Join-Path $root 'addons\*')) { exit 0 }
+if ($full -match '[\\/]addons[\\/]') { exit 0 }
 
-$out = & (Join-Path $root '.venv\Scripts\gdformat.exe') $full 2>&1 | ForEach-Object { "$_" } | Out-String
+# The venv is gitignored, so a git worktree has none. Use the main checkout's venv then.
+$gdformat = Join-Path $root '.venv\Scripts\gdformat.exe'
+if (-not (Test-Path $gdformat)) {
+    $common = git -C $root rev-parse --path-format=absolute --git-common-dir 2>$null
+    if ($common) { $gdformat = Join-Path (Split-Path -Parent $common) '.venv\Scripts\gdformat.exe' }
+}
+
+$out = & $gdformat $full 2>&1 | ForEach-Object { "$_" } | Out-String
 if ($LASTEXITCODE -ne 0) {
     [Console]::Error.WriteLine("gdformat failed on ${file}:`n$out")
     exit 2

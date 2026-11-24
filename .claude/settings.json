@@ -12,7 +12,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"$CLAUDE_PROJECT_DIR/tools/format-hook.ps1\""
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -Command '& (Join-Path (git rev-parse --show-toplevel) tools/format-hook.ps1); exit $LASTEXITCODE'"
           }
         ]
       }
