@@ -15,7 +15,6 @@ The order we build things in and how much effort each part gets. Each phase ends
 
 | # | Phase | What's in it | Size | Gate |
 |---|-------|--------------|------|------|
-| 0 | **Learn** | Box Gym, steps 1–16 (`docs/learning-path.md`). | Your pace | You can explain Box Gym line by line. Phase 1 can start once you're at step 6. |
 | 1 | **Movement core** | Player on SUCC, mouse look, debug overlay (speed, velocity line), ground move + friction, jump, **bhop**, **air strafe**, a settings resource with all feel values, test course v1. | ~10 features | You play the course, and bhop + air strafe feel right to you. Speed gain matches expected numbers in tests. |
 | 2 | **Aim core** | Hitscan gun, targets, one drill (static targets while moving), stats (accuracy, hits, time), sensitivity + FOV matching. | ~6 features | First playable: move + shoot + see your score. |
 | 3 | **More techs** | One tech at a time, each with its own section on the test course: **surf** → **tap strafe** → **wall bounce** → **superglide** → **rocket jump** → **grapple**. | Surf, tap strafe, wall bounce: ~2 each. Superglide: ~2. Rocket jump: ~3. Grapple: ~5. | Each tech passes its own tests and feels right before the next one starts. |
