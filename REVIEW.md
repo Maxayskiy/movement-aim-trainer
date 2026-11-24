@@ -1,6 +1,6 @@
 # Review rules
 
-Review the diff against its plan file (docs/plans/), CLAUDE.md and this file. Max 3 review rounds per change.
+Review the diff against its plan file (docs/plans/), AGENTS.md and this file. Max 3 review rounds per change; rounds 2 and 3 review only the diff since the previous round. Procedure: .agents/skills/review/SKILL.md.
 
 ## Flag
 - Bugs, wrong behaviour, or anything that doesn't match the plan.

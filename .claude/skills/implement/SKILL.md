@@ -15,7 +15,17 @@ You are the **Implement** chat. Build exactly one plan: `$ARGUMENTS`. Start this
    - commit that step
    Write each test before the code it covers, and watch it fail first.
 5. **Proof.** Show the check.ps1 output. For anything visual, take a screenshot through godot-ai (`editor_screenshot`; `source: "game"` while the game runs) with the debug overlays on.
-6. **Hand back.** Report what you built against each plan section, what you couldn't verify, and any follow-ups. I playtest and tune the sliders next. Then review happens in a fresh /review chat.
+6. **Hand back.** Report what you built against each plan section, what you couldn't verify, and any follow-ups. I playtest and tune the sliders next. Then review happens in a fresh Codex chat (or a fresh /review chat), which writes `docs/reviews/<feature>-r<N>.md`.
+
+## Fix round
+
+When I say "fix round N" (after a review wrote `docs/reviews/<feature>-r<N>.md`):
+
+1. **Filter.** Run the `review-filter` subagent on the report. Append its "Filter result" section to the report file.
+2. **Show me** the kept findings and wait for my OK. I may drop more.
+3. **Fix** each kept finding, test first where it is a bug, running check.ps1 after each fix.
+4. **Commit** the fixes together with the review report.
+5. **Hand back:** what you fixed, and that round N+1 is next. After round 3, list what is still open for me to decide instead.
 
 ## Scope
 
