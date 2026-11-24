@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://1iq9yfycq083"]
+[gd_scene format=3 uid="uid://1irayfycq083"]
 
 [ext_resource type="PackedScene" uid="uid://dyx826m71ip5e" path="res://addons/SUCC/scenes/succ_character.tscn" id="1_player"]
 [ext_resource type="Script" uid="uid://bdssrppl6wfw3" path="res://addons/SUCC/demo/test_level.gd" id="2_level"]
