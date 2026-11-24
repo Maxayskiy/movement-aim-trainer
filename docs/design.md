@@ -19,7 +19,7 @@ Source-style movement that keeps momentum:
 **Players can tune it.** Every value that affects feel is exposed as a setting (sliders), not hard-coded.
 
 ## Core: aim
-Targets and aim drills played while moving. Stats, sensitivity and FOV matching to other games (M4).
+Targets and aim drills played while moving. Stats, sensitivity and FOV matching to other games.
 
 ## Planned extras
 - **Arcade modes**, for example **Exhaust**: dodge bullets, hit enemies, life steal, endless chasing enemies.
@@ -29,4 +29,4 @@ Targets and aim drills played while moving. Stats, sensitivity and FOV matching 
 - Eventually: a **Steam release**.
 
 ## Quality bar
-One finished piece first: a movement test course that feels right before anything else is built (M1).
+One finished piece first: a movement test course that feels right before anything else is built.
