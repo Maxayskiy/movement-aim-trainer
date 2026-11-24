@@ -20,12 +20,15 @@ Read `docs/design.md` and `docs/state/ideas.md` (create it if missing). Then ask
 2. **Grill.** Use the `grilling` skill until no questions are left.
 3. **Research.** When a technique needs facts (how a tech works in Source, Apex or Titanfall 2), run parallel research subagents. Keep only their summaries.
 4. **Two proposals.** Give two different approaches with trade-offs and a recommendation. Wait for my pick.
-5. **Plan file.** Write `docs/plans/<feature>.md` using the template below. Wait for my approval, then set `Status: approved`.
+5. **Plan file.** Write the plan using the template below, as `docs/plans/draft-<slug>.md` while it is a draft. Names follow AGENTS.md "Naming". Wait for my approval.
+6. **Issue.** Once I approve, create the GitHub issue: title = feature name, body = the Behaviour section plus the plan path. Use `gh issue create` only if `gh auth status` shows the Maxayskiy account. Otherwise ask me to create it and tell you the number. Never use the GitHub MCP connector for this repo.
+7. **Number it.** Rename the plan to `docs/plans/NNN-slug.md` (issue number padded to 3 digits), fill in its `Issue:` line, set `Status: approved`, and commit it: `docs(plans): add NNN-slug plan (#N)`.
 
 ## Plan template
 
 ```markdown
 # <Feature name>
+Issue: #<N> (filled in on approval)
 Status: draft | approved
 
 ## Behaviour
@@ -48,4 +51,4 @@ The plan is done when every section is filled, every feel value is a named slide
 
 ## Before I clear the chat
 
-Update `docs/state/ideas.md`: decisions made, plans written (with status), open questions and the backlog. The next session knows only what this file holds.
+Update `docs/state/ideas.md`: decisions made, plans written (with issue number and status) and open questions. The backlog lives in GitHub issues: file new backlog items as issues (same account rule as step 6), not in this file. The next session knows only what this file and the open issues hold.

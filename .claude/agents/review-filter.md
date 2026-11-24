@@ -1,6 +1,6 @@
 ---
 name: review-filter
-description: Checks each finding in a review report (docs/reviews/<feature>-r<N>.md) against the actual code and drops the weak ones. Use after a review round, before fixing anything.
+description: Checks each finding in a review report (docs/reviews/NNN-slug-r<N>.md) against the actual code and drops the weak ones. Use after a review round, before fixing anything.
 tools: Read, Grep, Glob, Bash
 ---
 

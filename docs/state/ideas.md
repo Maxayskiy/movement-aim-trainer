@@ -2,6 +2,7 @@
 
 ## Decisions
 
+- 2026-11-24: Naming follows AGENTS.md "Naming": every feature starts as a GitHub issue; plans, branches and reviews use the 3-digit issue number (`012-bhop`); commits use Conventional Commits with `(#N)`.
 - 2026-11-23: Learn first. The user learns Godot basics through the Teach chat before feature planning starts. Anything we implement, the user checks it in the Teach chat until they understand it.
 - 2026-11-23: Learning is done in a throwaway practice game, "Box Gym", kept in its own Godot project outside this repo.
 
@@ -22,6 +23,8 @@ _None yet._
 _None._ (Decided: don't change the Teach skill. Box Gym teaching uses docs/box-gym-teaching.md instead.)
 
 ## Backlog
+
+The backlog moves to GitHub issues (see AGENTS.md "Naming"). File these as issues once `gh` is signed in as Maxayskiy, or by hand, then delete them from here.
 
 - First real feature after learning: probably bhop + air strafing on the movement test course (the design doc's quality bar).
 - Movement gotchas. Put these in the first movement plan:
