@@ -20,7 +20,7 @@ The skills you need to understand this project, in learning order. Each one adds
 | 12 | **Composition: small nodes with one job.** Child nodes as components. A simple state machine. | Project rule: one movement tech per file in `src/player/techs/`. | Split "jump" and "walk" into two child-node scripts that the player calls. |
 | 13 | **Autoloads and scene switching.** Global singletons, `change_scene_to_file`. | Settings shared everywhere, menu → course → arcade mode. | A main menu scene with a Play button, and a global `Settings` autoload. |
 | 14 | **Debugging.** `print`, breakpoints, the remote scene tree, on-screen debug draws. | Reading why movement feels wrong. Proof screenshots with overlays. | Pause on a breakpoint mid-jump and inspect `velocity`. |
-| 15 | **Tests with GUT.** Writing a test, running it, reading a failure. | Project rule: `tools/check.ps1` must pass. Implement writes tests you'll review. | A test that checks your jump reaches the expected height. |
+| 15 | **Tests with GUT.** Writing a test, running it, reading a failure. | Project rule: `workflow/tools/check.ps1` must pass. Implement writes tests you'll review. | A test that checks your jump reaches the expected height. |
 | 16 | **Reading an addon.** Finding your way around someone else's code. | Movement sits on top of SUCC (`addons/SUCC/`). | (In this repo, not Box Gym.) The Teach chat walks you through SUCC's player script. |
 
 ## Later, when a feature needs it

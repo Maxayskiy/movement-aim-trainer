@@ -1,8 +1,8 @@
 ---
 name: review
-description: Review chat (Claude fallback; Codex is the main reviewer). Fresh-eyes review of a feature branch against its plan. Usage: /review docs/plans/NNN-slug.md [round]
+description: Review chat (Claude fallback; Codex is the main reviewer). Fresh-eyes review of a feature branch against its plan. Usage: /review workflow/plans/NNN-slug.md [round]
 disable-model-invocation: true
-argument-hint: docs/plans/NNN-slug.md [round 1-3]
+argument-hint: workflow/plans/NNN-slug.md [round 1-3]
 ---
 
 Arguments: `$ARGUMENTS`: the plan file, then the round number (default 1).

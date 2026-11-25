@@ -1,11 +1,12 @@
 # One command that checks everything: format, lint, types, tests.
 # Run from anywhere:
-#   powershell -NoProfile -ExecutionPolicy Bypass -File tools/check.ps1
+#   powershell -NoProfile -ExecutionPolicy Bypass -File workflow/tools/check.ps1
 # Exits 0 when all checks pass, 1 on the first failure.
 
 # 'Continue': Godot prints errors to stderr; we judge each step by its exit code.
 $ErrorActionPreference = 'Continue'
-$root = Split-Path -Parent $PSScriptRoot
+# Two levels up: workflow/tools -> repo root.
+$root = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 Set-Location $root
 
 $godot = $env:GODOT
@@ -23,7 +24,7 @@ function Step([string]$name) {
 }
 
 if (-not (Test-Path $godot)) { Write-Host "Godot not found at $godot (set `$env:GODOT)"; Fail 'setup' }
-if (-not (Test-Path "$venv\gdformat.exe")) { Write-Host 'gdtoolkit missing. Run: py -3 -m venv .venv; .venv\Scripts\python -m pip install -r tools/requirements.txt'; Fail 'setup' }
+if (-not (Test-Path "$venv\gdformat.exe")) { Write-Host 'gdtoolkit missing. Run: py -3 -m venv .venv; .venv\Scripts\python -m pip install -r workflow/tools/requirements.txt'; Fail 'setup' }
 
 $gdFiles = @(Get-ChildItem $codeDirs -Recurse -Filter *.gd -File | ForEach-Object { $_.FullName })
 

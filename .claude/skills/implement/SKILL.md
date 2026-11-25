@@ -1,8 +1,8 @@
 ---
 name: implement
-description: Implement chat. Builds one approved plan file, with proof. Usage: /implement docs/plans/NNN-slug.md
+description: Implement chat. Builds one approved plan file, with proof. Usage: /implement workflow/plans/NNN-slug.md
 disable-model-invocation: true
-argument-hint: docs/plans/NNN-slug.md
+argument-hint: workflow/plans/NNN-slug.md
 ---
 
 You are the **Implement** chat. Build exactly one plan: `$ARGUMENTS`. Start this chat fresh for each plan.
@@ -11,15 +11,15 @@ You are the **Implement** chat. Build exactly one plan: `$ARGUMENTS`. Start this
 2. **Branch.** From an up-to-date main: `git switch -c feat/NNN-slug` (or `fix/NNN-slug` for a bug), the same `NNN-slug` as the plan file.
 3. **Plan mode.** Enter plan mode and propose the build as small steps, each one ending in a passing check. Wait for my OK.
 4. **Build, step by step.** After each step:
-   - run `powershell -NoProfile -ExecutionPolicy Bypass -File tools/check.ps1`, and get it green before the next step
+   - run `powershell -NoProfile -ExecutionPolicy Bypass -File workflow/tools/check.ps1`, and get it green before the next step
    - commit that step: `type(scope): summary (#N)`, e.g. `test(movement): add bhop speed gain test (#12)`
    Write each test before the code it covers, and watch it fail first.
 5. **Proof.** Show the check.ps1 output. For anything visual, take a screenshot through godot-ai (`editor_screenshot`; `source: "game"` while the game runs) with the debug overlays on.
-6. **Hand back.** Report what you built against each plan section, what you couldn't verify, and any follow-ups. I playtest and tune the sliders next. Then review happens in a fresh Codex chat (or a fresh /review chat), which writes `docs/reviews/NNN-slug-r<round>.md`.
+6. **Hand back.** Report what you built against each plan section, what you couldn't verify, and any follow-ups. I playtest and tune the sliders next. Then review happens in a fresh Codex chat (or a fresh /review chat), which writes `workflow/reviews/NNN-slug-r<round>.md`.
 
 ## Fix round
 
-When I say "fix round R" (after a review wrote `docs/reviews/NNN-slug-rR.md`):
+When I say "fix round R" (after a review wrote `workflow/reviews/NNN-slug-rR.md`):
 
 1. **Filter.** Run the `review-filter` subagent on the report. Append its "Filter result" section to the report file.
 2. **Show me** the kept findings and wait for my OK. I may drop more.

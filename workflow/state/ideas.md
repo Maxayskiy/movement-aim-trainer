@@ -12,15 +12,15 @@ _None yet._
 
 ## Docs written
 
-- `docs/learning-path.md`: 16 Godot skills in learning order, each with a Box Gym step. Draft, waiting for the user's review.
+- `workflow/docs/learning-path.md`: 16 Godot skills in learning order, each with a Box Gym step. Draft, waiting for the user's review.
 
-- `docs/box-gym-teaching.md`: instructions the Teach chat follows to teach Box Gym. The user types all code; Teach guides and checks. This file overrides the Teach skill for Box Gym sessions only.
+- `workflow/docs/box-gym-teaching.md`: instructions the Teach chat follows to teach Box Gym. The user types all code; Teach guides and checks. This file overrides the Teach skill for Box Gym sessions only.
 
-- `docs/roadmap.md`: phases 0–7 with sizes and gates. Draft, waiting for the user's approval.
+- `workflow/docs/roadmap.md`: phases 0–7 with sizes and gates. Draft, waiting for the user's approval.
 
 ## Open questions
 
-_None._ (Decided: don't change the Teach skill. Box Gym teaching uses docs/box-gym-teaching.md instead.)
+_None._ (Decided: don't change the Teach skill. Box Gym teaching uses workflow/docs/box-gym-teaching.md instead.)
 
 ## Backlog
 

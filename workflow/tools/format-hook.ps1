@@ -3,7 +3,8 @@
 # Exit 0 = fine. Exit 2 = formatting failed; stderr is shown to Claude so it can fix the file.
 
 $ErrorActionPreference = 'Continue'
-$root = Split-Path -Parent $PSScriptRoot
+# Two levels up: workflow/tools -> repo root.
+$root = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 
 $raw = [Console]::In.ReadToEnd()
 if (-not $raw) { exit 0 }

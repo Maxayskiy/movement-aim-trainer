@@ -1,7 +1,7 @@
 # Roadmap
 Status: draft
 
-The order we build things in and how much effort each part gets. Each phase ends with a **gate**: a check that must pass before the next phase starts. A "feature" is half a day of work with one plan file in `docs/plans/`. Sizes are rough guesses, and we'll correct them as we go.
+The order we build things in and how much effort each part gets. Each phase ends with a **gate**: a check that must pass before the next phase starts. A "feature" is half a day of work with one plan file in `workflow/plans/`. Sizes are rough guesses, and we'll correct them as we go.
 
 ## Principles
 
