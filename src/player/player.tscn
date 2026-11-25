@@ -5,6 +5,7 @@
 [ext_resource type="Resource" path="res://src/player/player_config.tres" id="3_cfg"]
 [ext_resource type="Script" path="res://src/player/respawn.gd" id="4_respawn"]
 [ext_resource type="Script" path="res://src/player/input_setup.gd" id="5_input"]
+[ext_resource type="PackedScene" path="res://src/debug/debug_overlay.tscn" id="6_overlay"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_1"]
 size = Vector3(0.813, 1.829, 0.813)
@@ -68,3 +69,5 @@ script = ExtResource("4_respawn")
 
 [node name="InputSetup" type="Node" parent="." unique_id=200100002]
 script = ExtResource("5_input")
+
+[node name="DebugOverlay" parent="." unique_id=200100003 instance=ExtResource("6_overlay")]

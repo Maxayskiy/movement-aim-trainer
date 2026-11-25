@@ -2,6 +2,8 @@ class_name PlayerRespawn
 extends Node
 ## Puts the parent SUCC back at its level start on the respawn action or a fall.
 
+signal respawned
+
 ## Falling below this height (m) respawns the player.
 @export var kill_height: float = -30.0
 
@@ -24,6 +26,7 @@ func respawn() -> void:
 	_player.teleport(_start)
 	if _player.camera_rig:
 		_player.camera_rig.pitch = 0.0
+	respawned.emit()
 
 
 func _unhandled_input(event: InputEvent) -> void:
