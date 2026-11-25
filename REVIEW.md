@@ -4,13 +4,13 @@ Review the diff against its plan file (docs/plans/), AGENTS.md and this file. Ma
 
 ## Flag
 - Bugs, wrong behaviour, or anything that doesn't match the plan.
-- Missing static types; Godot 3 APIs.
 - Hard-coded feel values (should be @export or a setting).
 - Tests that were edited or deleted to make them pass.
 - Work outside the plan's scope.
 
 ## Do not flag
-- Formatting and style: gdformat and gdlint handle these.
+- Anything check.ps1 catches: formatting, style, lint, missing static types, Godot 3 APIs.
+- Problems in code the change didn't touch, unless the change causes them.
 - Anything inside addons/ (third-party code).
 - Missing docs or comments on obvious code.
 - "Could be more general" ideas with no current need.
