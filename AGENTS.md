@@ -21,8 +21,8 @@ First-person movement aim trainer in Godot 4.7.2+ (typed GDScript). Source-style
 
 ## Layout
 - The game: project.godot, src/ code, levels/ scenes, tests/ tests, assets/, addons/ (third-party, read-only).
-- Everything else is in workflow/, which Godot ignores: docs/ (design, roadmap, learning), plans/, reviews/, state/, research/, tools/ (check and hook scripts), REVIEW.md.
-- workflow/state/ holds working notes for the /ideas and /assets skills. They are not specs: workflow/docs/design.md and the issue's plan win.
+- Everything else is in workflow/, which Godot ignores: docs/ (design, roadmap, learning path), plans/, reviews/, state/, research/, tools/ (check and hook scripts), REVIEW.md.
+- workflow/state/ holds working notes for the /ideas, /assets and /teach skills. They are not specs: workflow/docs/design.md and the issue's plan win.
 
 ## Naming
 Every feature or bug starts as a GitHub issue. Its number, padded to 3 digits (`NNN`), plus a short kebab-case slug, names everything about it. Example: issue #12 Bhop.
