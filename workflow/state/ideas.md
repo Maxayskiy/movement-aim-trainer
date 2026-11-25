@@ -32,6 +32,13 @@
 - 2026-11-25 (number tests): test config = frozen copy of today's defaults. A second config (max_speed 8, jump_height 2, friction 6) also runs top speed, apex and stop time.
 - 2026-11-25 (number tests): tolerances: speeds ±1 u/s, heights ±1 cm, distances ±2 cm, times ±1 tick.
 - 2026-11-25 (number tests): if a measurement is out of tolerance, the Implement chat stops and reports measured vs expected; no tolerance/expected edits, no addon edits. The user decides: accepted SUCC quirk (reason recorded in the plan) or bug issue.
+- 2026-11-25 (bhop/strafe tests, feature 4): bhop + air strafing only. Surf numbers → issue #9.
+- 2026-11-25 (bhop/strafe tests): bhop numbers: 5-hop W+jump chain from top speed keeps 400 u/s every tick, hop period 86 ticks, 0 ground ticks; `bhop_buffered_jump` off and `enable_bhop` off each: held jump = one jump, press 1 tick early = no hop, press on first floor tick = hop with no loss; late jump above top speed costs ×0.96875 per ground tick, at top speed with W held a ground tick costs nothing.
+- 2026-11-25 (bhop/strafe tests): strafe numbers: perfect one hop from 400 → 487.2 u/s; 5 perfect hops land at 487/561/626/685/740; strafe key without turning → 401.1 then flat; W in air adds nothing; S in air 400 → −30 u/s in 2 ticks.
+- 2026-11-25 (bhop/strafe tests): "perfect strafe" = A or D only, yaw set each tick to the optimal wish angle (90° to horizontal velocity when per-tick accel ≥ max_air_speed, else velocity·wish = max_air_speed − accel), side switches every hop. With T: 4.29°/tick (549°/s).
+- 2026-11-25 (bhop/strafe tests): new config A = T with air_acceleration 5 (accel-limited regime), runs the one-hop strafe test only. S not used.
+- 2026-11-25 (bhop/strafe tests): report adds hop period, perfect-strafe speed after 1 and 5 hops, turn rate needed at top speed, air-brake ticks (no asserts). Tolerances and stop-and-report rule same as #8.
+- 2026-11-25 (bhop/strafe tests): approach A (literal numbers). Accepted ~40 s more real-time test time in check.ps1, no trimming. Faster test runs (`--fixed-fps 128`) left out; not filed as an issue.
 
 - 2026-11-24: Naming follows AGENTS.md "Naming": every feature starts as a GitHub issue; plans, branches and reviews use the 3-digit issue number (`012-bhop`); commits use Conventional Commits with `(#N)`.
 - 2026-11-24: The roadmap stays broad. Phases set goals and gates; the specific features are chosen when each phase starts.
@@ -42,9 +49,10 @@
 
 - **Movement base (phase 1)**: Big, split into 6 features (see Decisions).
   - Feature 1 **Player base**: `workflow/plans/001-player-base.md`, issue #1. **Done**: merged to main, issue closed 2026-11-25. Approach B (compose around SUCC; no player.gd yet).
-  - Feature 2 **Debug overlay**: `workflow/plans/005-debug-overlay.md`, issue #5, approved 2026-11-25. Ready for the Implement chat. Approach A: `DebugOverlay` CanvasLayer is a child of `player.tscn`; pure `BhopTracker` and `PerfSampler` classes hold the logic.
+  - Feature 2 **Debug overlay**: `workflow/plans/005-debug-overlay.md`, issue #5. **Done**: merged to main, issue closed 2026-11-25. Approach A: `DebugOverlay` CanvasLayer is a child of `player.tscn`; pure `BhopTracker` and `PerfSampler` classes hold the logic.
   - Feature 3 **Ground and jump number tests**: `workflow/plans/008-ground-jump-tests.md`, issue #8, approved 2026-11-25. Ready for the Implement chat. Approach A: literal expected numbers (computed offline, script in the plan's appendix). Rig `tests/helpers/movement_rig.gd` drives SUCC via `command` and records a per-tick trace; feature 4 reuses it. Doesn't depend on #5.
-  - Features 4–6: not planned yet.
+  - Feature 4 **Bhop and air-strafe tests**: `workflow/plans/010-bhop-strafe-tests.md`, issue #10, approved 2026-11-25 (committed on main). Ready for the Implement chat once #8 is merged. Approach A: literal expected numbers (script in the plan's appendix); rig gains controlled steps (per-tick input from a Callable), new `PerfectStrafer` test helper. Depends on #8 (rig) being merged. Adds ~40 s of real-time ticks to check.ps1.
+  - Features 5–6: not planned yet.
 
 ## Docs written
 
