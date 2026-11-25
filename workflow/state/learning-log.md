@@ -8,3 +8,7 @@ What I've learned in Teach sessions. Newest at the bottom.
 - Learned: `F` frames the selected node in the 3D viewport
 - Shaky: not yet confirmed which cause applied (stale copy vs camera elsewhere)
 - Next: read a .tscn node block (transform, size, material) and what the Transform3D numbers mean
+
+## 2026-11-25: Feature numbering
+- Learned: NNN in plan/branch names = GitHub issue number, not build order; backlog issues #2–#4 took numbers, so the 2nd feature is 005
+- Next: walkthrough of 001 and 005, starting with composition (player.tscn child nodes, respawn.gd)
