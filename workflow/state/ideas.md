@@ -23,6 +23,15 @@
 - 2026-11-25 (debug overlay): respawn (R or kill height) clears bhop stats, via a new `respawned` signal on `respawn.gd`.
 - 2026-11-25 (debug overlay): performance numbers refresh every 0.25 s (@export); frame time is the window average; ticks/s is counted in real time, not read from settings. Movement numbers update every frame.
 - 2026-11-25 (debug overlay): F3 state lasts for the session, not saved.
+- 2026-11-25 (number tests, feature 3): tests guard mechanics, not tuning: they use their own fixed test config, so retuning `player_config.tres` never breaks them.
+- 2026-11-25 (number tests): numbers covered: top ground speed = max_speed (diagonals too), time + distance 0→top, stop time + distance with no keys, crouch-walk top speed, sprint held doesn't change top speed, jump apex, airtime, takeoff tick keeps horizontal speed, landing tick keeps it (friction from the next tick), fall speed = −g·t. Counter-strafe → issue #6, crouch-jump apex → issue #7. Step height and slopes → feature 5.
+- 2026-11-25 (number tests): build a reusable movement test rig (flat arena, spawn player, scripted per-tick input, per-tick trace) for feature 4 to reuse.
+- 2026-11-25 (number tests): tests use a flat floor built in the test, not `test_course.tscn`.
+- 2026-11-25 (number tests): tests also print the shipped config's numbers (no asserts): speeds u/s, distances/heights m, times s + ticks.
+- 2026-11-25 (number tests): real-time tests are OK (~10–15 s more on check.ps1).
+- 2026-11-25 (number tests): test config = frozen copy of today's defaults. A second config (max_speed 8, jump_height 2, friction 6) also runs top speed, apex and stop time.
+- 2026-11-25 (number tests): tolerances: speeds ±1 u/s, heights ±1 cm, distances ±2 cm, times ±1 tick.
+- 2026-11-25 (number tests): if a measurement is out of tolerance, the Implement chat stops and reports measured vs expected; no tolerance/expected edits, no addon edits. The user decides: accepted SUCC quirk (reason recorded in the plan) or bug issue.
 
 - 2026-11-24: Naming follows AGENTS.md "Naming": every feature starts as a GitHub issue; plans, branches and reviews use the 3-digit issue number (`012-bhop`); commits use Conventional Commits with `(#N)`.
 - 2026-11-24: The roadmap stays broad. Phases set goals and gates; the specific features are chosen when each phase starts.
@@ -34,7 +43,8 @@
 - **Movement base (phase 1)**: Big, split into 6 features (see Decisions).
   - Feature 1 **Player base**: `workflow/plans/001-player-base.md`, issue #1. **Done**: merged to main, issue closed 2026-11-25. Approach B (compose around SUCC; no player.gd yet).
   - Feature 2 **Debug overlay**: `workflow/plans/005-debug-overlay.md`, issue #5, approved 2026-11-25. Ready for the Implement chat. Approach A: `DebugOverlay` CanvasLayer is a child of `player.tscn`; pure `BhopTracker` and `PerfSampler` classes hold the logic.
-  - Features 3–6: not planned yet.
+  - Feature 3 **Ground and jump number tests**: `workflow/plans/008-ground-jump-tests.md`, issue #8, approved 2026-11-25. Ready for the Implement chat. Approach A: literal expected numbers (computed offline, script in the plan's appendix). Rig `tests/helpers/movement_rig.gd` drives SUCC via `command` and records a per-tick trace; feature 4 reuses it. Doesn't depend on #5.
+  - Features 4–6: not planned yet.
 
 ## Docs written
 
