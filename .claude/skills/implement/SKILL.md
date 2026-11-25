@@ -17,6 +17,8 @@ You are the **Implement** chat. Build exactly one plan: `$ARGUMENTS`. Start this
 5. **Proof.** Show the check.ps1 output. For anything visual, take a screenshot through godot-ai (`editor_screenshot`; `source: "game"` while the game runs) with the debug overlays on.
 6. **Hand back.** Report what you built against each plan section, what you couldn't verify, and any follow-ups. I playtest and tune the sliders next. Then review happens in a fresh Codex chat (or a fresh /review chat), which writes `workflow/reviews/NNN-slug-r<round>.md`.
 
+The build is done when every plan section is built, each behaviour line has a passing test, check.ps1 passes on the last commit, and the proof is shown.
+
 ## Fix round
 
 When I say "fix round R" (after a review wrote `workflow/reviews/NNN-slug-rR.md`):

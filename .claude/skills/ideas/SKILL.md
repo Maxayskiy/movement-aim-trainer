@@ -14,11 +14,15 @@ Read `workflow/docs/design.md` and `workflow/state/ideas.md` (create it if missi
 
 1. **Triage.** Say which kind it is, then follow that path:
    - *Clear and small* (half a day or less, no open questions): write the plan straight away (step 5).
-   - *Big or vague*: do steps 2–5.
+   - *Vague* (open questions): do steps 2–5.
+   - *Big* (more than half a day): split it into features of half a day each, then triage the first one again.
    - *Bug*: the plan's first step is "reproduce it and show the failing output before changing anything".
-   - *Bigger than half a day*: split it into features of half a day each and plan the first one.
 2. **Grill.** Use the `grilling` skill until no questions are left.
-3. **Research.** When a technique needs facts (how a tech works in Source, Apex or Titanfall 2), run parallel research subagents. Keep only their summaries.
+3. **Research.**
+   - *This code:* read the files the idea touches and summarize how they work today, with `file:line` references. Describe only what exists; no suggestions yet.
+   - *Outside facts:* when a technique needs facts (how a tech works in Source, Apex or Titanfall 2), run parallel research subagents. Keep only their summaries.
+
+   Research is done when you can name every file the idea touches and what each does now.
 4. **Two proposals.** Give two different approaches with trade-offs and a recommendation. Wait for my pick.
 5. **Plan file.** Write the plan using the template below, as `workflow/plans/draft-<slug>.md` while it is a draft. Names follow AGENTS.md "Naming". Wait for my approval.
 6. **Issue.** Once I approve, create the GitHub issue: title = feature name, body = the Behaviour section plus the plan path. Use `gh issue create` only if `gh auth status` shows the Maxayskiy account. Otherwise ask me to create it and tell you the number. Never use the GitHub MCP connector for this repo.
