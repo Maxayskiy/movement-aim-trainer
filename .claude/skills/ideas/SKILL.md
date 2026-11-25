@@ -53,6 +53,6 @@ What this feature deliberately leaves out.
 
 The plan is done when every section is filled, every feel value is a named slider, and every behaviour line has a test that proves it.
 
-## Before I clear the chat
+## Keep state current
 
-Update `workflow/state/ideas.md`: decisions made, plans written (with issue number and status) and open questions. The backlog lives in GitHub issues: file new backlog items as issues (same account rule as step 6), not in this file. The next session knows only what this file and the open issues hold.
+Update `workflow/state/ideas.md` as soon as something changes (a decision made, a plan written or approved, a question opened or closed), in the same reply. Don't wait for me to clear the chat. It holds decisions, plans (with issue number and status) and open questions. The backlog lives in GitHub issues: file new backlog items as issues (same account rule as step 6), not in this file. The next session knows only what this file and the open issues hold.

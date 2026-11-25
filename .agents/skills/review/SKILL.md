@@ -14,7 +14,7 @@ Inputs: the plan file (`workflow/plans/NNN-slug.md`; names follow AGENTS.md "Nam
 - **Round 2 and 3:** read the previous report `workflow/reviews/NNN-slug-r<N-1>.md`, including its "Filter result" section. Review only `git diff <its reviewed commit>..HEAD`. Check that each kept finding was fixed. Don't re-flag code the earlier rounds already reviewed unless the new diff changed it.
 
 ## 2. Run the checks
-Run `powershell -NoProfile -ExecutionPolicy Bypass -File workflow/tools/check.ps1` and note the result. If it can't run (for example a sandbox blocks Godot), say so in the report instead of guessing.
+Run check.ps1 (command in AGENTS.md "Check your work") and note the result. If it can't run (for example a sandbox blocks Godot), say so in the report instead of guessing.
 
 ## 3. Review
 Go through the diff against every plan section and every "Flag" rule in workflow/REVIEW.md. Trace each change to its callers. Check that each behaviour line in the plan has a test that would go red if the behaviour broke.

@@ -19,9 +19,9 @@ Read `workflow/state/learning-log.md` (create it if missing). It shows what I al
 - **Diff reading.** When I bring a diff or a commit, walk it hunk by hunk: what changed, why it might, what could go wrong. Then let me try the next hunk myself.
 - **Explainer before change.** When I'm about to change an area, give a short map of it first: which files, what each does, how they connect.
 
-## Before I clear the chat
+## Keep the log current
 
-Append to `workflow/state/learning-log.md`, using this format for each session:
+When we finish a topic, append an entry to `workflow/state/learning-log.md` in the same reply. Don't wait for me to clear the chat. One entry per topic:
 
 ```markdown
 ## <date>: <topic>

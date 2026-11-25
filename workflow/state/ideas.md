@@ -3,6 +3,7 @@
 ## Decisions
 
 - 2026-11-24: Naming follows AGENTS.md "Naming": every feature starts as a GitHub issue; plans, branches and reviews use the 3-digit issue number (`012-bhop`); commits use Conventional Commits with `(#N)`.
+- 2026-11-24: The roadmap stays broad. Phases set goals and gates; the specific features are chosen when each phase starts.
 - 2026-11-23: Learn first. The user learns Godot basics through the Teach chat before feature planning starts. Anything we implement, the user checks it in the Teach chat until they understand it.
 - 2026-11-23: Learning is done in a throwaway practice game, "Box Gym", kept in its own Godot project outside this repo.
 
@@ -14,13 +15,11 @@ _None yet._
 
 - `workflow/docs/learning-path.md`: 16 Godot skills in learning order, each with a Box Gym step. Draft, waiting for the user's review.
 
-- `workflow/docs/box-gym-teaching.md`: instructions the Teach chat follows to teach Box Gym. The user types all code; Teach guides and checks. This file overrides the Teach skill for Box Gym sessions only.
-
-- `workflow/docs/roadmap.md`: phases 0–7 with sizes and gates. Draft, waiting for the user's approval.
+- `workflow/docs/roadmap.md`: phases 1–7, kept broad on purpose. Each phase has a goal, a pool of example directions, a size range and a gate. We pick a phase's contents when it starts (e.g. phase 3 = "1–3 complex movement techs", not a fixed list). Approved 2026-11-24.
 
 ## Open questions
 
-_None._ (Decided: don't change the Teach skill. Box Gym teaching uses workflow/docs/box-gym-teaching.md instead.)
+_None._
 
 ## Backlog
 

@@ -29,7 +29,7 @@ Every feature or bug starts as a GitHub issue. Its number, padded to 3 digits (`
 - Plan: `workflow/plans/NNN-slug.md` (`workflow/plans/012-bhop.md`). Its second line is `Issue: #N`.
 - Branch: `feat/NNN-slug` for features, `fix/NNN-slug` for bugs. Throwaway experiments: `spike/slug`.
 - Review reports: `workflow/reviews/NNN-slug-r<round>.md` (`workflow/reviews/012-bhop-r1.md`).
-- Commits: Conventional Commits, `type(scope): summary (#N)`, e.g. `feat(movement): add bhop speed cap (#12)`. Types: feat, fix, test, docs, refactor, chore. Scopes: movement, aim, ui, debug, tools, docs. Work with no issue (setup, chores) leaves out `(#N)`.
+- Commits: Conventional Commits, `type(scope): summary (#N)`, e.g. `feat(movement): add bhop speed cap (#12)`. Types: feat, fix, test, docs, refactor, chore. Scopes: movement, aim, ui, debug, tools, docs, plans. Work with no issue (setup, chores) leaves out `(#N)`.
 - Merge to main: the merge commit message ends with `Closes #N`, so GitHub closes the issue on push.
 - Use 3 digits only in file and branch names. In commit messages and issue text, write `#12`, GitHub's own form.
 

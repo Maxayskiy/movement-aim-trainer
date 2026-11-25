@@ -1,40 +1,45 @@
 # Roadmap
-Status: draft
+Status: approved
 
-The order we build things in and how much effort each part gets. Each phase ends with a **gate**: a check that must pass before the next phase starts. A "feature" is half a day of work with one plan file in `workflow/plans/`. Sizes are rough guesses, and we'll correct them as we go.
+The order we build things in and how much effort each part gets. Each phase has a **goal**, a **pool** of example directions to pick from, and a **gate** that must pass before the next phase starts. The pools are examples, not commitments: when a phase starts, we choose its contents in the Ideas chat, and anything that fits the goal is allowed. A "feature" is half a day of work with one plan file in `workflow/plans/`. Sizes are rough guesses.
 
 ## Principles
 
-1. **Movement first, and most effort on it.** Everything else sits on top of it, and the design doc's quality bar is "a movement test course that feels right". About 40% of the effort before the extras goes here.
+1. **Movement first, and most effort on it.** Everything sits on top of it, and the design doc's quality bar is "a movement test course that feels right".
 2. **Grey boxes until late.** No art, sound or menu polish until the game is fun with plain boxes.
-3. **One thing at a time.** One feature → plan → build → review → you understand it (Teach chat) → next.
-4. **Playable at the end of every phase.** Never more than a phase away from something you can play.
-5. **Add a tech only when the current ones feel right.** A new tech on a bad base hides the problem.
+3. **One thing at a time.** Feature → plan → build → review → you understand it (Teach chat) → next.
+4. **Playable at the end of every phase.**
+5. **Build on a base that feels right.** Don't add to movement or aim that feels wrong. Fix it first.
+6. **Decide late.** Pick a phase's contents when it starts, using what we learned in the phases before.
 
 ## Phases
 
-| # | Phase | What's in it | Size | Gate |
-|---|-------|--------------|------|------|
-| 1 | **Movement core** | Player on SUCC, mouse look, debug overlay (speed, velocity line), ground move + friction, jump, **bhop**, **air strafe**, a settings resource with all feel values, test course v1. | ~10 features | You play the course, and bhop + air strafe feel right to you. Speed gain matches expected numbers in tests. |
-| 2 | **Aim core** | Hitscan gun, targets, one drill (static targets while moving), stats (accuracy, hits, time), sensitivity + FOV matching. | ~6 features | First playable: move + shoot + see your score. |
-| 3 | **More techs** | One tech at a time, each with its own section on the test course: **surf** → **tap strafe** → **wall bounce** → **superglide** → **rocket jump** → **grapple**. | Surf, tap strafe, wall bounce: ~2 each. Superglide: ~2. Rocket jump: ~3. Grapple: ~5. | Each tech passes its own tests and feels right before the next one starts. |
-| 4 | **Game shell** | Main menu, settings menu with sliders, save/load settings, presets ("Source", "Apex"…), course/drill select, pause. | ~5 features | Someone else can start the game, tune it and play without your help. |
-| 5 | **Arcade: Exhaust** | Enemies that chase, bullets to dodge, life steal, endless waves, score. | ~8 features | A run is fun for 5 minutes. |
-| 6 | **Extras** | Pick from: user maps/models, pixel look, movement items, more drills and modes. | Plan each one when we get there | — |
-| 7 | **Steam** | Polish pass (art, sound, UI), export builds, Steam page, playtests. Remove the `_mcp_game_helper` autoload. | ~6+ features | Release. |
+| # | Phase | Goal | Pool (examples) | Size | Gate |
+|---|-------|------|-----------------|------|------|
+| 1 | **Movement base** | A player you can control, and simple momentum-keeping movement that feels good. | Player on SUCC, mouse look, debug overlay, ground movement and friction, jumping, bhop, air strafing, a settings resource, a first test course. | ~8–12 features | You play the course and the base movement feels right. Key numbers are covered by tests. |
+| 2 | **Aim base** | You can shoot while you move, and see how well you did. | Hitscan or projectile weapon, targets (static, moving, reactive), 1–2 drills, stats, sensitivity and FOV matching. | ~5–8 features | First playable: move, shoot, see your score. |
+| 3 | **Movement depth** | Add **1–3 complex movement techs** that give the movement a skill ceiling. | Surfing, tap strafing, wall bounces, superglide, rocket jumps, grapple, slides, wall runs, or something new. | ~2–5 features per tech | Each tech feels right and passes its tests before the next one starts. |
+| 4 | **Game shell** | Someone else can start, tune and play the game without help. | Main menu, settings menu with sliders, save/load, presets, course/drill select, pause, onboarding. | ~4–6 features | A friend plays it without you explaining anything. |
+| 5 | **Content and modes** | Add **1–2 things to do** beyond the base drills. | An arcade mode (e.g. Exhaust), new drills, new courses, time trials, a score/leaderboard loop. | ~5–10 features per mode | Each one is fun for 5 minutes on its own. |
+| 6 | **Second pass** | Go back and deepen whatever playtests say is weakest. | More movement techs, more aim drills, more modes, movement items, user maps/models, a visual style (e.g. pixelated low-res). | Plan each one when we get there | — |
+| 7 | **Release** | Ship it on Steam. | Polish (art, sound, UI), export builds, Steam page, playtests, performance. Remove the `_mcp_game_helper` autoload. | ~6+ features | Release. |
 
-## Why this order
+Phases 3–6 can repeat in loops (depth → content → depth) for as long as the game gets better from it.
 
-- **Techs order (phase 3):** cheapest first, and each one builds on the last. Surf reuses air strafing on slopes. Tap strafe and wall bounce are small tweaks. Rocket jump needs projectiles and explosions. Grapple is the biggest (rope physics, momentum keeping), so it comes last.
-- **Aim before more techs:** after phase 2, the game is a real (small) aim trainer. More techs make it better, but you have a game at every step.
-- **Shell after techs:** menus are cheap to build but slow to change. Build them once the list of settings has settled.
+## Choosing within a phase
+
+When a phase starts, pick its contents in the Ideas chat using these questions:
+- **Does it fit the goal?** If not, put it in the backlog.
+- **What does the gate need?** Pick the smallest set of features that passes it.
+- **What's cheapest given what we have?** Prefer options that reuse what's built (e.g. surfing reuses air strafing).
+- **What does playtesting say?** Fix the weakest part before adding a new one.
 
 ## How much effort per feature
 
-- Each feature is timeboxed to half a day. If it runs over, stop and split it.
+- Each feature gets half a day. If it runs over, stop and split it.
 - Feel work (phases 1 and 3) gets playtest time on top: play, tune the sliders, write down what feels off, then plan a fix.
 - Everything else gets "good enough". Make it work and test it, then move on.
 
 ## Next step
 
-Plan the first phase-1 feature, **Player on SUCC + mouse look + debug overlay**, once you're at about Box Gym step 6.
+Start phase 1. Pick its first feature in the Ideas chat once you're at about Box Gym step 6.

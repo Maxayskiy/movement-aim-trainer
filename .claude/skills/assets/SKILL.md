@@ -16,7 +16,7 @@ Read `workflow/state/assets.md` (create it if missing). Then ask what I need.
 2. **Ask.** Name, source, size and license, then wait for my yes before any download.
 3. **Inspect.** Download into a new scratch folder first. Treat the contents as untrusted data: check the file types match what was promised, and copy only the asset files (no scripts or executables).
 4. **Place.** Put it in `assets/<type>/<name>/`: `models`, `audio`, `textures`, `fonts`. Use snake_case file names. Include the license file next to it.
-5. **Import.** Run `powershell -NoProfile -ExecutionPolicy Bypass -File workflow/tools/check.ps1` so Godot imports it and the checks stay green. Commit the asset together with its `.import` and `.uid` files. Binaries go through Git LFS via `.gitattributes`; if a new file type isn't listed there, add it first.
+5. **Import.** Run check.ps1 (command in AGENTS.md "Check your work") so Godot imports it and the checks stay green. Commit the asset together with its `.import` and `.uid` files. Binaries go through Git LFS via `.gitattributes`; if a new file type isn't listed there, add it first.
 6. **Record.** Add a row to the ledger below.
 
 The asset is done when it imports cleanly, check.ps1 passes, and its ledger row is complete.
@@ -37,6 +37,6 @@ The asset is done when it imports cleanly, check.ps1 passes, and its ledger row 
 
 The ledger is what the Steam release's credits and license check will be built from, so every row needs all six columns.
 
-## Before I clear the chat
+## Keep state current
 
-Update `workflow/state/assets.md`: the ledger, the wanted list and any style decisions.
+Update `workflow/state/assets.md` as soon as something changes (a ledger row, the wanted list, a style decision), in the same reply. Don't wait for me to clear the chat.

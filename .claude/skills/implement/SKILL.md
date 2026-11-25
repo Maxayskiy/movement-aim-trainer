@@ -11,8 +11,8 @@ You are the **Implement** chat. Build exactly one plan: `$ARGUMENTS`. Start this
 2. **Branch.** From an up-to-date main: `git switch -c feat/NNN-slug` (or `fix/NNN-slug` for a bug), the same `NNN-slug` as the plan file.
 3. **Plan mode.** Enter plan mode and propose the build as small steps, each one ending in a passing check. Wait for my OK.
 4. **Build, step by step.** After each step:
-   - run `powershell -NoProfile -ExecutionPolicy Bypass -File workflow/tools/check.ps1`, and get it green before the next step
-   - commit that step: `type(scope): summary (#N)`, e.g. `test(movement): add bhop speed gain test (#12)`
+   - run check.ps1 (command in AGENTS.md "Check your work"), and get it green before the next step
+   - commit that step (format in AGENTS.md "Naming")
    Write each test before the code it covers, and watch it fail first.
 5. **Proof.** Show the check.ps1 output. For anything visual, take a screenshot through godot-ai (`editor_screenshot`; `source: "game"` while the game runs) with the debug overlays on.
 6. **Hand back.** Report what you built against each plan section, what you couldn't verify, and any follow-ups. I playtest and tune the sliders next. Then review happens in a fresh Codex chat (or a fresh /review chat), which writes `workflow/reviews/NNN-slug-r<round>.md`.
