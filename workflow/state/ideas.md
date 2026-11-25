@@ -11,6 +11,18 @@
 - 2026-11-24 (movement base): respawn on R and below a kill height (@export, default -30 m), zero velocity.
 - 2026-11-24 (movement base): feature 1 uses approach B: SUCC's script stays on the root unchanged; respawn and input setup are child nodes. player.gd comes with the first tech that needs a movement-loop hook.
 - 2026-11-24 (movement base): feature 1 includes 128 Hz tick, `use_accumulated_input = false`, SUCC input actions in the Input Map; keeps the demo course geometry, drops the demo level script, adds our own respawn.
+- 2026-11-25 (debug overlay, feature 2): a developer tool. A player speedometer setting comes in phase 4 and can reuse it.
+- 2026-11-25 (debug overlay): shows horizontal speed, vertical speed, movement state, floor type, crouched, held keys (WASD/jump/crouch boxes), FPS, physics ticks/s, frame time (ms), process time, physics time. Bhop stats: last takeoff speed, gain vs previous takeoff, hops in a row (no history list). No position, no velocity vector.
+- 2026-11-25 (debug overlay): speeds in u/s only.
+- 2026-11-25 (debug overlay): F3 (`toggle_debug`) toggles everything except the horizontal speed, which always stays on. On at start (@export).
+- 2026-11-25 (debug overlay): horizontal speed sits under the crosshair; everything else is a top-left panel, monospace, semi-transparent dark background, font size @export (default 18).
+- 2026-11-25 (debug overlay): text and key boxes only. Speed graph (#2) and 3D velocity/wish-dir arrows (#3) are separate backlog issues.
+- 2026-11-25 (debug overlay): speedometer = whole-number u/s, no unit text, white, ~40 px under the crosshair, size 28; offset, size and `show_speedometer` (default on, no key) are @exports. Gain/loss colour is backlog issue #4.
+- 2026-11-25 (debug overlay): all speeds whole-number u/s; times in ms, 2 decimals.
+- 2026-11-25 (debug overlay): a hop extends the chain only with ≤ `max_chain_ground_ticks` (@export, default 0) friction ticks between landing and jump; otherwise the chain restarts at 1. Panel also shows the last hop's ground ticks.
+- 2026-11-25 (debug overlay): respawn (R or kill height) clears bhop stats, via a new `respawned` signal on `respawn.gd`.
+- 2026-11-25 (debug overlay): performance numbers refresh every 0.25 s (@export); frame time is the window average; ticks/s is counted in real time, not read from settings. Movement numbers update every frame.
+- 2026-11-25 (debug overlay): F3 state lasts for the session, not saved.
 
 - 2026-11-24: Naming follows AGENTS.md "Naming": every feature starts as a GitHub issue; plans, branches and reviews use the 3-digit issue number (`012-bhop`); commits use Conventional Commits with `(#N)`.
 - 2026-11-24: The roadmap stays broad. Phases set goals and gates; the specific features are chosen when each phase starts.
@@ -20,7 +32,9 @@
 ## Plans
 
 - **Movement base (phase 1)**: Big, split into 6 features (see Decisions).
-  - Feature 1 **Player base**: `workflow/plans/001-player-base.md`, issue #1, approved 2026-11-24. Build waits for Box Gym step 6 unless the user says otherwise. Approach B (compose around SUCC; no player.gd yet).
+  - Feature 1 **Player base**: `workflow/plans/001-player-base.md`, issue #1. **Done**: merged to main, issue closed 2026-11-25. Approach B (compose around SUCC; no player.gd yet).
+  - Feature 2 **Debug overlay**: `workflow/plans/005-debug-overlay.md`, issue #5, approved 2026-11-25. Ready for the Implement chat. Approach A: `DebugOverlay` CanvasLayer is a child of `player.tscn`; pure `BhopTracker` and `PerfSampler` classes hold the logic.
+  - Features 3–6: not planned yet.
 
 ## Docs written
 
