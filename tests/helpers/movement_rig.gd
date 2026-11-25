@@ -18,14 +18,23 @@ const DISTANCE_TOL_M: float = 0.02
 const TICK_TOL: int = 1
 
 
-## One input held for a number of ticks.
+## One input held for a number of ticks, or (controlled) an input chosen per
+## tick by controller.call(rig, step_tick) -> SUCCInput.
 class Step:
 	var input: SUCCInput
 	var ticks: int
+	var controller: Callable
 
 	func _init(step_input: SUCCInput, step_ticks: int) -> void:
 		input = step_input
 		ticks = step_ticks
+
+	## Before each of its ticks the rig calls step_controller.call(rig, step_tick)
+	## (step_tick 0 = the step's first tick) and uses the returned SUCCInput.
+	static func controlled(step_controller: Callable, step_ticks: int) -> Step:
+		var step: Step = Step.new(null, step_ticks)
+		step.controller = step_controller
+		return step
 
 
 ## The player's state after one tick, with the input that tick used.
@@ -47,6 +56,7 @@ var _idle: SUCCInput = SUCCInput.new()
 var _steps: Array[Step] = []
 var _step_index: int = 0
 var _ticks_left: int = 0
+var _current_input: SUCCInput
 var _tick: int = 0
 var _playing: bool = false
 var _jumped_flag: bool = false
@@ -73,6 +83,13 @@ static func test_config() -> SUCCConfig:
 	config.enforce_max_velocity = false
 	config.crouch_speed_modifier = 1.0 / 3.0
 	config.sprint_speed_modifier = 1.0
+	return config
+
+
+## Air config A: T with air_acceleration 5.0.
+static func air_config() -> SUCCConfig:
+	var config: SUCCConfig = test_config()
+	config.air_acceleration = 5.0
 	return config
 
 
@@ -145,7 +162,7 @@ func play(steps: Array[Step]) -> void:
 		return
 	_step_index = 0
 	_ticks_left = _steps[0].ticks
-	player.command = _steps[0].input
+	_use_input(_input_for(_steps[0], 0))
 	_playing = true
 	while _playing:
 		await get_tree().physics_frame
@@ -155,16 +172,29 @@ func play(steps: Array[Step]) -> void:
 func _physics_process(_delta: float) -> void:
 	if _playing:
 		_tick += 1
-		trace.append(_sample(_steps[_step_index].input))
+		trace.append(_sample(_current_input))
 		_ticks_left -= 1
 		if _ticks_left <= 0:
 			_step_index += 1
 			if _step_index >= _steps.size():
 				_playing = false
 				player.command = _idle
-			else:
-				_ticks_left = _steps[_step_index].ticks
-				player.command = _steps[_step_index].input
+				return
+			_ticks_left = _steps[_step_index].ticks
+		var step: Step = _steps[_step_index]
+		_use_input(_input_for(step, step.ticks - _ticks_left))
+
+
+## The input for one tick of a step: its fixed input, or its controller's.
+func _input_for(step: Step, step_tick: int) -> SUCCInput:
+	if step.controller.is_valid():
+		return step.controller.call(self, step_tick) as SUCCInput
+	return step.input
+
+
+func _use_input(input: SUCCInput) -> void:
+	_current_input = input
+	player.command = input
 
 
 func _sample(input: SUCCInput) -> Sample:
