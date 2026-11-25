@@ -79,3 +79,55 @@ func test_first_sample_used_first_step() -> void:
 	await _rig.play(steps)
 	var speed: float = MovementRig.horizontal_speed(_rig.trace[1].velocity)
 	assert_almost_eq(MovementRig.ups(speed), 23.4, MovementRig.SPEED_TOL_UPS)
+
+
+func test_air_config_values() -> void:
+	var a: SUCCConfig = MovementRig.air_config()
+	var t: SUCCConfig = MovementRig.test_config()
+	assert_almost_eq(a.air_acceleration, 5.0, 0.0001)
+	assert_almost_eq(a.gravity, t.gravity, 0.0001)
+	assert_almost_eq(a.jump_height, t.jump_height, 0.0001)
+	assert_eq(a.bhop_buffered_jump, t.bhop_buffered_jump)
+	assert_almost_eq(a.acceleration, t.acceleration, 0.0001)
+	assert_almost_eq(a.friction, t.friction, 0.0001)
+	assert_almost_eq(a.stop_speed, t.stop_speed, 0.0001)
+	assert_almost_eq(a.max_speed, t.max_speed, 0.0001)
+	assert_almost_eq(a.max_air_speed, t.max_air_speed, 0.0001)
+	assert_eq(a.enforce_max_velocity, t.enforce_max_velocity)
+	assert_almost_eq(a.crouch_speed_modifier, t.crouch_speed_modifier, 0.0001)
+	assert_almost_eq(a.sprint_speed_modifier, t.sprint_speed_modifier, 0.0001)
+
+
+func test_controlled_step_calls_and_trace() -> void:
+	_rig.spawn(MovementRig.test_config())
+	assert_true(await _rig.settle())
+	var calls: Array[int] = []
+	var returned: Array[SUCCInput] = []
+	var controller: Callable = func(_r: MovementRig, step_tick: int) -> SUCCInput:
+		calls.append(step_tick)
+		var input: SUCCInput = _forward()
+		returned.append(input)
+		return input
+	var steps: Array[MovementRig.Step] = [MovementRig.Step.controlled(controller, 5)]
+	await _rig.play(steps)
+	assert_eq(calls, [0, 1, 2, 3, 4] as Array[int])
+	assert_eq(_rig.trace.size(), 6)
+	if returned.size() != 5 or _rig.trace.size() != 6:
+		return
+	for i: int in range(1, 6):
+		assert_same(_rig.trace[i].input, returned[i - 1], "trace[%d] input" % i)
+
+
+func test_controlled_step_sees_previous_tick() -> void:
+	_rig.spawn(MovementRig.test_config())
+	assert_true(await _rig.settle())
+	var seen_sizes: Array[int] = []
+	var controller: Callable = func(r: MovementRig, _step_tick: int) -> SUCCInput:
+		seen_sizes.append(r.trace.size())
+		return _forward()
+	var steps: Array[MovementRig.Step] = [
+		MovementRig.Step.new(_forward(), 3),
+		MovementRig.Step.controlled(controller, 2),
+	]
+	await _rig.play(steps)
+	assert_eq(seen_sizes, [4, 5] as Array[int])
