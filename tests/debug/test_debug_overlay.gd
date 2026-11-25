@@ -135,10 +135,19 @@ func test_respawn_clears_bhop_stats() -> void:
 func test_perf_lines_fill_in() -> void:
 	await wait_seconds(0.3)
 	var stats: String = _stats().text
-	for label: String in ["fps", "frame", "process", "physics", "ticks/s"]:
+	# Whole numbers for rates, 2 decimals plus "ms" for times.
+	var patterns: Dictionary[String, String] = {
+		"fps": "^fps\\s+\\d+$",
+		"frame": "^frame\\s+\\d+\\.\\d{2} ms$",
+		"process": "^process\\s+\\d+\\.\\d{2} ms$",
+		"physics": "^physics\\s+\\d+\\.\\d{2} ms$",
+		"ticks/s": "^ticks/s\\s+\\d+$",
+	}
+	for label: String in patterns:
 		var line: String = _find_line(stats, label)
 		assert_ne(line, "", "%s line exists" % label)
-		assert_false(line.contains(NO_VALUE), "%s has a number: %s" % [label, line])
+		var regex: RegEx = RegEx.create_from_string(patterns[label])
+		assert_not_null(regex.search(line), "%s shows a number: '%s'" % [label, line])
 
 
 func _find_line(text: String, label: String) -> String:
