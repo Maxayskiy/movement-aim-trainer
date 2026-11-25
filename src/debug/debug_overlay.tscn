@@ -1,0 +1,117 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/debug/debug_overlay.gd" id="1_overlay"]
+
+[sub_resource type="SystemFont" id="SystemFont_mono"]
+font_names = PackedStringArray("Consolas", "Cascadia Mono", "Courier New", "monospace")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+content_margin_left = 8.0
+content_margin_top = 6.0
+content_margin_right = 8.0
+content_margin_bottom = 6.0
+bg_color = Color(0, 0, 0, 0.55)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_key"]
+content_margin_left = 6.0
+content_margin_top = 2.0
+content_margin_right = 6.0
+content_margin_bottom = 2.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+
+[node name="DebugOverlay" type="CanvasLayer" unique_id=500500001]
+layer = 10
+script = ExtResource("1_overlay")
+
+[node name="Speedometer" type="Label" parent="." unique_id=500500002]
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = 40.0
+offset_right = 200.0
+offset_bottom = 40.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("SystemFont_mono")
+theme_override_font_sizes/font_size = 28
+text = "0"
+horizontal_alignment = 1
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=500500003]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 8.0
+offset_bottom = 8.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="VBox" type="VBoxContainer" parent="Panel" unique_id=500500004]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Stats" type="Label" parent="Panel/VBox" unique_id=500500005]
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = SubResource("SystemFont_mono")
+theme_override_font_sizes/font_size = 18
+
+[node name="Keys" type="HBoxContainer" parent="Panel/VBox" unique_id=500500006]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="KeyW" type="Label" parent="Panel/VBox/Keys" unique_id=500500007]
+modulate = Color(1, 1, 1, 0.3)
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = SubResource("SystemFont_mono")
+theme_override_styles/normal = SubResource("StyleBoxFlat_key")
+text = "W"
+
+[node name="KeyA" type="Label" parent="Panel/VBox/Keys" unique_id=500500008]
+modulate = Color(1, 1, 1, 0.3)
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = SubResource("SystemFont_mono")
+theme_override_styles/normal = SubResource("StyleBoxFlat_key")
+text = "A"
+
+[node name="KeyS" type="Label" parent="Panel/VBox/Keys" unique_id=500500009]
+modulate = Color(1, 1, 1, 0.3)
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = SubResource("SystemFont_mono")
+theme_override_styles/normal = SubResource("StyleBoxFlat_key")
+text = "S"
+
+[node name="KeyD" type="Label" parent="Panel/VBox/Keys" unique_id=500500010]
+modulate = Color(1, 1, 1, 0.3)
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = SubResource("SystemFont_mono")
+theme_override_styles/normal = SubResource("StyleBoxFlat_key")
+text = "D"
+
+[node name="KeyJump" type="Label" parent="Panel/VBox/Keys" unique_id=500500011]
+modulate = Color(1, 1, 1, 0.3)
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = SubResource("SystemFont_mono")
+theme_override_styles/normal = SubResource("StyleBoxFlat_key")
+text = "JUMP"
+
+[node name="KeyCrouch" type="Label" parent="Panel/VBox/Keys" unique_id=500500012]
+modulate = Color(1, 1, 1, 0.3)
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/font = SubResource("SystemFont_mono")
+theme_override_styles/normal = SubResource("StyleBoxFlat_key")
+text = "CROUCH"

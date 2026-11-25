@@ -47,3 +47,19 @@ func test_jump_has_no_mouse_button() -> void:
 func test_sprint_exists_with_no_events() -> void:
 	assert_true(InputMap.has_action("sprint"))
 	assert_eq(InputMap.action_get_events("sprint").size(), 0)
+
+
+func test_toggle_debug_is_f3() -> void:
+	assert_true(InputMap.has_action("toggle_debug"))
+	if not InputMap.has_action("toggle_debug"):
+		return
+	var events: Array[InputEvent] = InputMap.action_get_events("toggle_debug")
+	assert_eq(events.size(), 1)
+	if events.size() != 1:
+		return
+	var key: InputEventKey = events[0] as InputEventKey
+	assert_not_null(key)
+	if key == null:
+		return
+	assert_eq(key.physical_keycode, KEY_F3)
+	assert_eq(key.keycode, KEY_NONE)
