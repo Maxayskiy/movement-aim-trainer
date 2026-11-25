@@ -1,10 +1,8 @@
 [gd_scene format=3 uid="uid://1irayfycq083"]
 
-[ext_resource type="PackedScene" uid="uid://dyx826m71ip5e" path="res://addons/SUCC/scenes/succ_character.tscn" id="1_player"]
-[ext_resource type="Script" uid="uid://bdssrppl6wfw3" path="res://addons/SUCC/demo/test_level.gd" id="2_level"]
+[ext_resource type="PackedScene" path="res://src/player/player.tscn" id="1_player"]
 [ext_resource type="Texture2D" uid="uid://da43pqfhnr1ew" path="res://addons/SUCC/demo/texture_06.png" id="3_78e84"]
 [ext_resource type="Theme" path="res://addons/SUCC/demo/demo.tres" id="3_theme"]
-[ext_resource type="AudioStream" uid="uid://ss4lporqojg" path="res://addons/SUCC/demo/jump.ogg" id="4_jump"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ahl2s"]
 sky_top_color = Color(0.13, 0.18, 0.28, 1)
@@ -44,7 +42,6 @@ albedo_color = Color(0.5, 0.36, 0.52, 1)
 albedo_color = Color(0.32, 0.42, 0.62, 1)
 
 [node name="TestLevel" type="Node3D" unique_id=1347613809]
-script = ExtResource("2_level")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=598810719]
 environment = SubResource("Env_1")
@@ -56,10 +53,6 @@ shadow_enabled = true
 [node name="Player" parent="." unique_id=1749752620 instance=ExtResource("1_player")]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 1, 24)
-
-[node name="JumpSound" type="AudioStreamPlayer" parent="." unique_id=200000001]
-unique_name_in_owner = true
-stream = ExtResource("4_jump")
 
 [node name="Floor" type="CSGBox3D" parent="." unique_id=697389564]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 0, -69)
@@ -401,83 +394,6 @@ theme_type_variation = &"HUDCrosshair"
 text = "+"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="Speedo" type="VBoxContainer" parent="UI/HUD" unique_id=180000002]
-layout_mode = 0
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = 22.0
-offset_right = 150.0
-offset_bottom = 104.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="UnitsLabel" type="Label" parent="UI/HUD/Speedo" unique_id=180000003]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"HUDSpeed"
-text = "0 u/s"
-horizontal_alignment = 1
-
-[node name="MetricLabel" type="Label" parent="UI/HUD/Speedo" unique_id=180000004]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"HUDSub"
-text = "0.00 m/s"
-horizontal_alignment = 1
-
-[node name="StateLabel" type="Label" parent="UI/HUD/Speedo" unique_id=180000005]
-unique_name_in_owner = true
-layout_mode = 2
-text = "IDLE"
-horizontal_alignment = 1
-
-[node name="PresetPanel" type="VBoxContainer" parent="UI/HUD" unique_id=180000006]
-layout_mode = 0
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -300.0
-offset_top = 16.0
-offset_right = -16.0
-offset_bottom = 90.0
-grow_horizontal = 0
-
-[node name="PresetLabel" type="Label" parent="UI/HUD/PresetPanel" unique_id=180000007]
-unique_name_in_owner = true
-layout_mode = 2
-theme_type_variation = &"HUDTitle"
-text = "Preset"
-horizontal_alignment = 2
-
-[node name="PresetDetail" type="Label" parent="UI/HUD/PresetPanel" unique_id=180000008]
-unique_name_in_owner = true
-layout_mode = 2
-text = "detail"
-horizontal_alignment = 2
-
-[node name="FlagsLabel" type="Label" parent="UI/HUD/PresetPanel" unique_id=180000009]
-unique_name_in_owner = true
-layout_mode = 2
-text = "flags"
-horizontal_alignment = 2
-
-[node name="Hint" type="Label" parent="UI/HUD" unique_id=633692235]
-unique_name_in_owner = true
-layout_mode = 0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = -56.0
-offset_right = -16.0
-offset_bottom = -14.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "<INPUT INSTRUCTIONS HINT>"
-vertical_alignment = 2
 
 [node name="Barriers" type="Node3D" parent="." unique_id=190000000]
 
