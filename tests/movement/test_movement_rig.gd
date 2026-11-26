@@ -160,9 +160,19 @@ func test_spawn_without_floor() -> void:
 
 func test_spawn_pins_floor_angles() -> void:
 	var player: SUCC = _rig.spawn(MovementRig.test_config())
-	assert_almost_eq(rad_to_deg(player.ramp_angle_threshold), 45.0, 0.0001)
-	assert_almost_eq(rad_to_deg(player.max_floor_angle), 45.0, 0.0001)
+	assert_almost_eq(player.ramp_angle_threshold, acos(0.7), 0.0001)
+	assert_almost_eq(player.max_floor_angle, deg_to_rad(45.0), 0.0001)
 	assert_eq(_static_bodies(), 1, "default floor added")
+
+
+func test_spawn_unpinned_keeps_scene_angles() -> void:
+	var scene_player: SUCC = MovementRig.PLAYER_SCENE.instantiate() as SUCC
+	var scene_ramp: float = scene_player.ramp_angle_threshold
+	var scene_max: float = scene_player.max_floor_angle
+	scene_player.free()
+	var player: SUCC = _rig.spawn(MovementRig.test_config(), Vector3(0.0, 0.01, 0.0), true, false)
+	assert_almost_eq(player.ramp_angle_threshold, scene_ramp, 0.0001)
+	assert_almost_eq(player.max_floor_angle, scene_max, 0.0001)
 
 
 func test_add_box() -> void:
