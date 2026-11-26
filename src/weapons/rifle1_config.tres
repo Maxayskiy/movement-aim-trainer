@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="RifleConfig" format=3]
+
+[ext_resource type="Script" path="res://src/weapons/rifle_config.gd" id="1_cfg"]
+
+[resource]
+script = ExtResource("1_cfg")
+shots_per_second = 4.0
+full_auto = true
+dps = 100.0
