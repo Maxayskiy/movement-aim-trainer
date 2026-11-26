@@ -40,6 +40,25 @@
 - 2026-11-25 (bhop/strafe tests): report adds hop period, perfect-strafe speed after 1 and 5 hops, turn rate needed at top speed, air-brake ticks (no asserts). Tolerances and stop-and-report rule same as #8.
 - 2026-11-25 (bhop/strafe tests): approach A (literal numbers). Accepted ~40 s more real-time test time in check.ps1, no trimming. Faster test runs (`--fixed-fps 128`) left out; not filed as an issue.
 
+- 2026-11-25 (course, feature 5): build a new course scene from scratch (not edits to the SUCC demo course, not dropped).
+- 2026-11-25 (course): the new course keeps a long strafe lane like the user's walled corridor in the demo course (14 m × 107 m, 22 m walls).
+- 2026-11-25 (course): delete the SUCC demo course (`levels/test_course/`); the new course `levels/movement_course/` becomes the main scene. Changing `test_course_scene.gd` is a planned spec change the plan states.
+- 2026-11-25 (course): layout = hub with stations; R returns to the hub. Linear timed runs → phase 5.
+- 2026-11-25 (course): stations: hub + spawn pad; strafe lane 14×107 m, 22 m walls, marker every 10 m; bhop strip (gaps grow); seams & edges (seamed boxes, ramp-to-floor edges, ramp crest); steps 0.30/0.44/0.46/0.60 m; slopes 15/30/44/46°; jump ledges just under/over max jump height; crouch tunnel; surf V-ramp. No slide chute.
+- 2026-11-25 (course): add step-height (0.44 climbs, 0.46 blocks) and slope (44° walkable, 46° slides) rig tests.
+- 2026-11-25 (course): every feature 5 test builds its own geometry (like #8); a light scene test checks the course loads, has the player, is the main scene.
+- 2026-11-25 (course): copy SUCC's demo grid texture (MIT) into `assets/textures/`; one tint per station type.
+- 2026-11-25 (course): no barrier walls; floor edges open, falling off respawns via kill height.
+- 2026-11-25 (course): split: 5a hull and terrain tests first (seams, ramp edges, crest, steps, slopes, standing-jump ledge limit; geometry built in tests, frozen test config), then 5b movement course (scene, texture, delete demo, main-scene switch, scene test).
+- 2026-11-25 (course): 5b jump ledges sit 5 cm under and over the standing-jump ledge limit measured in 5a (SUCC air step-up and air duck raise it above 1.143 m). Crouch-jump limit stays in #7.
+- 2026-11-25 (course): 5b bhop strip gaps need 400/450/500/550/600 u/s, each block labelled; missing a gap lands on the floor.
+- 2026-11-25 (course): 5b copies demo sizes where they exist: crouch tunnel clearance 1.016 m; surf V 53° sides, 40 m long, 8.9 m start tower.
+- 2026-11-25 (course): 5b Label3D sign per station (name + key number); strafe lane has a distance number every 10 m on the wall.
+- 2026-11-25 (course): 5a seam cases: straight and 45° seams, ground run at 400 u/s W held, plus a bhop landing on a seam. Pass: 400 ±1 u/s every tick, height ±1 cm, never airborne on a ground run.
+- 2026-11-25 (course): 5a ramp edges (15° and 30°, up and down) and 30° crest pass = no single-tick speed drop > 1 u/s at the edge; ramp→floor also no airborne tick; crest may go airborne (Source behaviour).
+- 2026-11-25 (course): surf-ramp seams (rampbug) stay in #9 (comment added there).
+- 2026-11-25 (course): box hull on seams, ramp-to-floor edges and ramp crests is proven by rig tests (400 u/s across: no speed loss, no vertical bump) plus a playtest. If SUCC snags: stop and report, same rule as #8/#10.
+
 - 2026-11-24: Naming follows AGENTS.md "Naming": every feature starts as a GitHub issue; plans, branches and reviews use the 3-digit issue number (`012-bhop`); commits use Conventional Commits with `(#N)`.
 - 2026-11-24: The roadmap stays broad. Phases set goals and gates; the specific features are chosen when each phase starts.
 - 2026-11-23: Learn first. The user learns Godot basics through the Teach chat before feature planning starts. Anything we implement, the user checks it in the Teach chat until they understand it.
@@ -50,9 +69,12 @@
 - **Movement base (phase 1)**: Big, split into 6 features (see Decisions).
   - Feature 1 **Player base**: `workflow/plans/001-player-base.md`, issue #1. **Done**: merged to main, issue closed 2026-11-25. Approach B (compose around SUCC; no player.gd yet).
   - Feature 2 **Debug overlay**: `workflow/plans/005-debug-overlay.md`, issue #5. **Done**: merged to main, issue closed 2026-11-25. Approach A: `DebugOverlay` CanvasLayer is a child of `player.tscn`; pure `BhopTracker` and `PerfSampler` classes hold the logic.
-  - Feature 3 **Ground and jump number tests**: `workflow/plans/008-ground-jump-tests.md`, issue #8, approved 2026-11-25. Ready for the Implement chat. Approach A: literal expected numbers (computed offline, script in the plan's appendix). Rig `tests/helpers/movement_rig.gd` drives SUCC via `command` and records a per-tick trace; feature 4 reuses it. Doesn't depend on #5.
-  - Feature 4 **Bhop and air-strafe tests**: `workflow/plans/010-bhop-strafe-tests.md`, issue #10, approved 2026-11-25 (committed on main). Ready for the Implement chat once #8 is merged. Approach A: literal expected numbers (script in the plan's appendix); rig gains controlled steps (per-tick input from a Callable), new `PerfectStrafer` test helper. Depends on #8 (rig) being merged. Adds ~40 s of real-time ticks to check.ps1.
-  - Features 5–6: not planned yet.
+  - Feature 3 **Ground and jump number tests**: `workflow/plans/008-ground-jump-tests.md`, issue #8. **Done**: merged to main 2026-11-25 (merge commit lacked `Closes #8`, so the issue was still open on 2026-11-25). Approach A: literal expected numbers (computed offline, script in the plan's appendix). Rig `tests/helpers/movement_rig.gd` drives SUCC via `command` and records a per-tick trace; feature 4 reuses it. Doesn't depend on #5.
+  - Feature 4 **Bhop and air-strafe tests**: `workflow/plans/010-bhop-strafe-tests.md`, issue #10. **Done**: merged to main via PR #11, issue closed 2026-11-25. Approach A: literal expected numbers (script in the plan's appendix); rig gains controlled steps (per-tick input from a Callable), new `PerfectStrafer` test helper. Depends on #8 (rig) being merged. Adds ~40 s of real-time ticks to check.ps1.
+  - Feature 5a **Hull and terrain tests**: `workflow/plans/012-hull-terrain-tests.md`, issue #12, approved 2026-11-25. Implemented on `feat/012-hull-terrain-tests` (d142ffc), not merged yet. Approach A: literal ledge limit 1.613 m (apex 1.143 + top air lift 0.47, appendix script); seam/edge pass rules; rig gains `add_box`, `add_ramp`, `with_floor`, pins step_height/ramp threshold/max floor angle. 6b failed as feared; rig now pins `max_floor_angle` 45° (amendment committed on the feature branch). Shipped value → #13.
+  - Bug **Player sticks on 45–50° slopes**: `workflow/plans/013-slope-stick.md`, issue #13, approved 2026-11-25. After #12. Walkable limit → Source's 45.573°.
+  - Feature 5b **Movement course**: not planned yet (decisions above). Slope station 44°/46° still straddles the new 45.57° limit.
+  - Feature 6: not planned yet.
 
 ## Docs written
 
@@ -62,7 +84,9 @@
 
 ## Open questions
 
-- Movement base feature 5: the demo course already has stairs, slants, bhop blocks, a crouch tunnel and surf ramps. Revisit whether feature 5 shrinks to adding seams/ramp edges, or is dropped.
+- #12 behaviour 6b failed in the Implement chat (2026-11-25): a player resting on 46° slides 0.000 m. Probe (scratch, headless): default 0.000 m; `floor_stop_on_slope` off only creeps 0.134 m (Godot strips vertical velocity on floor contact); `max_floor_angle` 45° (= ramp threshold) slides 11.3 m, 18.2 m/s after ~1.2 s. 44° stays still in all three. Decided 2026-11-25: #12's rig pins `max_floor_angle` 45° (plan amended, commit 0d5e646 on `feat/012-hull-terrain-tests`); the shipped value is bug issue #13 "Player sticks on 45–50° slopes".
+- 2026-11-25 (#13): Godot's 0.01 rad floor margin confirmed by probe (max 45/thr 45 leaves 45.3° stuck). Walkable limit = Source's acos(0.7) = 45.573°: `ramp_angle_threshold` 45.573°, `max_floor_angle` 45°. Approach 1: values only in `player.tscn` + rig pins match + `pin_angles` flag; linking into one slider → feature 6. Plan `workflow/plans/013-slope-stick.md`, approved 2026-11-25 (committed on main 772ba1d, not pushed). Starts after #12 is merged; branch `fix/013-slope-stick`.
+- Movement base feature 5b (course): next to plan (5a approved as #12). Ledges at 1.563 / 1.663 m (5a limit 1.613 m ± 5 cm).
 
 ## Backlog
 

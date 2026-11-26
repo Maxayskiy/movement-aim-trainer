@@ -18,9 +18,11 @@ const DISTANCE_TOL_M: float = 0.02
 const TICK_TOL: int = 1
 
 ## Pinned on the player root so terrain tests don't depend on its defaults.
-const RAMP_ANGLE_THRESHOLD_DEG: float = 45.0
-## 45, not SUCC's 50: with 50, Godot holds a body still on a 45-50 deg RAMP
-## (see the Decision in workflow/plans/012-hull-terrain-tests.md and #13).
+## Same as player.tscn: Source's walkable limit, acos(0.7) = 45.573 deg.
+## Godot counts floor up to max_floor_angle + 0.573 deg, so 45 deg meets it
+## exactly; otherwise a resting body sticks on a RAMP band
+## (see workflow/plans/013-slope-stick.md and #13).
+const RAMP_ANGLE_THRESHOLD_DEG: float = rad_to_deg(acos(0.7))
 const MAX_FLOOR_ANGLE_DEG: float = 45.0
 
 
@@ -121,8 +123,12 @@ static func horizontal_distance(a: Vector3, b: Vector3) -> float:
 	return Vector2(b.x - a.x, b.z - a.z).length()
 
 
+## pin_angles false keeps the floor angles from player.tscn.
 func spawn(
-	config: SUCCConfig, at: Vector3 = Vector3(0.0, 0.01, 0.0), with_floor: bool = true
+	config: SUCCConfig,
+	at: Vector3 = Vector3(0.0, 0.01, 0.0),
+	with_floor: bool = true,
+	pin_angles: bool = true
 ) -> SUCC:
 	if with_floor and _floor == null:
 		_floor = StaticBody3D.new()
@@ -137,8 +143,9 @@ func spawn(
 	player.config = config
 	player.command = _idle
 	player.position = at
-	player.ramp_angle_threshold = deg_to_rad(RAMP_ANGLE_THRESHOLD_DEG)
-	player.max_floor_angle = deg_to_rad(MAX_FLOOR_ANGLE_DEG)
+	if pin_angles:
+		player.ramp_angle_threshold = deg_to_rad(RAMP_ANGLE_THRESHOLD_DEG)
+		player.max_floor_angle = deg_to_rad(MAX_FLOOR_ANGLE_DEG)
 	player.jumped.connect(_on_jumped)
 	player.landed.connect(_on_landed)
 	add_child(player)

@@ -29,6 +29,8 @@ distance_fade_max_distance = 1.25
 [node name="Player" type="CharacterBody3D" unique_id=759156532]
 script = ExtResource("1_succ")
 config = ExtResource("3_cfg")
+ramp_angle_threshold = 0.7953988
+max_floor_angle = 0.7853982
 input_actions = {
 "back": "back",
 "crouch": "crouch",

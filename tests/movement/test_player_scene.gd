@@ -48,3 +48,9 @@ func test_has_respawn_and_input_setup_children() -> void:
 
 func test_input_is_not_accumulated_after_ready() -> void:
 	assert_false(Input.use_accumulated_input)
+
+
+# Behaviour 3 of workflow/plans/013-slope-stick.md.
+func test_floor_angles_meet_at_source_limit() -> void:
+	assert_almost_eq(_player.ramp_angle_threshold, acos(0.7), 0.0001)
+	assert_almost_eq(_player.max_floor_angle, deg_to_rad(45.0), 0.0001)
