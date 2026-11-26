@@ -17,6 +17,12 @@ const HEIGHT_TOL_M: float = 0.01
 const DISTANCE_TOL_M: float = 0.02
 const TICK_TOL: int = 1
 
+## Pinned on the player root so terrain tests don't depend on its defaults.
+const RAMP_ANGLE_THRESHOLD_DEG: float = 45.0
+## 45, not SUCC's 50: with 50, Godot holds a body still on a 45-50 deg RAMP
+## (see the Decision in workflow/plans/012-hull-terrain-tests.md and #13).
+const MAX_FLOOR_ANGLE_DEG: float = 45.0
+
 
 ## One input held for a number of ticks, or (controlled) an input chosen per
 ## tick by controller.call(rig, step_tick) -> SUCCInput.
@@ -83,6 +89,7 @@ static func test_config() -> SUCCConfig:
 	config.enforce_max_velocity = false
 	config.crouch_speed_modifier = 1.0 / 3.0
 	config.sprint_speed_modifier = 1.0
+	config.step_height = 0.45
 	return config
 
 
@@ -114,8 +121,10 @@ static func horizontal_distance(a: Vector3, b: Vector3) -> float:
 	return Vector2(b.x - a.x, b.z - a.z).length()
 
 
-func spawn(config: SUCCConfig, at: Vector3 = Vector3(0.0, 0.01, 0.0)) -> SUCC:
-	if _floor == null:
+func spawn(
+	config: SUCCConfig, at: Vector3 = Vector3(0.0, 0.01, 0.0), with_floor: bool = true
+) -> SUCC:
+	if with_floor and _floor == null:
 		_floor = StaticBody3D.new()
 		var shape: CollisionShape3D = CollisionShape3D.new()
 		var box: BoxShape3D = BoxShape3D.new()
@@ -128,10 +137,41 @@ func spawn(config: SUCCConfig, at: Vector3 = Vector3(0.0, 0.01, 0.0)) -> SUCC:
 	player.config = config
 	player.command = _idle
 	player.position = at
+	player.ramp_angle_threshold = deg_to_rad(RAMP_ANGLE_THRESHOLD_DEG)
+	player.max_floor_angle = deg_to_rad(MAX_FLOOR_ANGLE_DEG)
 	player.jumped.connect(_on_jumped)
 	player.landed.connect(_on_landed)
 	add_child(player)
 	return player
+
+
+## A static box of the given size, centred at position, rotated in degrees.
+func add_box(
+	size: Vector3, position: Vector3, rotation_deg: Vector3 = Vector3.ZERO
+) -> StaticBody3D:
+	var body: StaticBody3D = StaticBody3D.new()
+	var shape: CollisionShape3D = CollisionShape3D.new()
+	var box: BoxShape3D = BoxShape3D.new()
+	box.size = size
+	shape.shape = box
+	body.add_child(shape)
+	body.position = position
+	body.rotation_degrees = rotation_deg
+	add_child(body)
+	return body
+
+
+## A box whose top face rises toward -Z at angle_deg, with the top face's low
+## edge centred on low_edge. length is measured along the slope.
+func add_ramp(
+	angle_deg: float, low_edge: Vector3, length: float, width: float, thickness: float = 0.5
+) -> StaticBody3D:
+	var angle: float = deg_to_rad(angle_deg)
+	# Unit vectors of the rotated box: along the slope (uphill) and the top normal.
+	var along: Vector3 = Vector3(0.0, sin(angle), -cos(angle))
+	var normal: Vector3 = Vector3(0.0, cos(angle), sin(angle))
+	var centre: Vector3 = low_edge + along * (length / 2.0) - normal * (thickness / 2.0)
+	return add_box(Vector3(width, thickness, length), centre, Vector3(angle_deg, 0.0, 0.0))
 
 
 ## Waits until the player is on FLOOR after 2 ticks in a row. False if it
