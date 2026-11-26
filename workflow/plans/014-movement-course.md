@@ -25,13 +25,15 @@ What the player gets. Lengths in m, speeds in u/s, angles in degrees.
 
    | Label | Gap | Block centre z |
    |---|---|---|
-   | 400 | 7.80 | −18 |
+   | 400 | 7.73 | −18 |
    | 450 | 8.73 | −9 |
    | 500 | 9.66 | 0 |
    | 550 | 10.60 | 9 |
-   | 600 | 11.53 | 18 |
+   | 600 | 11.44 | 18 |
 
-   A gap labelled v is the reach of an **edge takeoff** at v − 25 u/s. An edge takeoff means the hull's back face is 5 cm inside the edge and jump is held 1 tick with no other keys. The reach includes SUCC's air step-up, which lifts up to 0.47 m when the hull clips the block's face. So an edge takeoff at v lands on the block, with about 0.47 m to spare. An edge takeoff at v − 50 falls short by about 0.47 m and ends on the floor. Each block's label shows its v.
+   **Retuned 2026-11-25** (400 was 7.80, 600 was 11.53). Landing at v isn't monotone in gap length: SUCC's air step-up fails in bands about 4–8 cm wide, every ~0.16 m, and 7.80 and 11.53 fell in such bands (the 400 run measured as landing only from 413 u/s, the 600 run from 632 u/s). Gaps were scanned in 2 cm steps at v and v − 50. 7.73 and 11.44 sit mid-way in a landing band at v, with v − 50 missing. 450 / 500 / 550 were kept: they pass (450 is 2 cm above a failing band, 550 is 4 cm below one).
+
+   A gap labelled v is roughly the reach of an **edge takeoff** at v − 25 u/s. An edge takeoff means the hull's back face is 5 cm inside the edge and jump is held 1 tick with no other keys. The reach includes SUCC's air step-up, which lifts up to 0.47 m when the hull clips the block's face. So an edge takeoff at v lands on the block, with about 0.47 m to spare. An edge takeoff at v − 50 falls short by about 0.47 m and ends on the floor. Each block's label shows its v.
 5. **Seams and edges** (north-west).
    - A 20 × 20 m plateau, top at 1.5529 m (= 6 sin 15°), made of four 10 × 10 m tiles. Running straight across it crosses a seam at 90°. Running diagonally crosses one at 45°. A 15° ramp, 6 m along the slope and 10 m wide, leads up its south side, and another leads down its north side.
    - Beside it, a 10 × 10 m plateau, top at 3.0 m. A 30° ramp leads up its south side (the crest is its top edge), and another leads down its north side.
@@ -40,7 +42,7 @@ What the player gets. Lengths in m, speeds in u/s, angles in degrees.
 7. **Slopes** (south). Four slopes, each 6 m wide and 8 m along the slope, rising south from the floor at 15° / 30° / 44° / 46°. The 15°, 30° and 44° slopes end in a 4 m deep platform level with their top edge. 44° can be walked up. 46° slides you back down.
 8. **Ledges** (south). Two 4 × 4 m boxes, 1.563 m and 1.663 m tall: 5 cm under and over #12's standing-jump limit of 1.613 m. A standing jump climbs the first and not the second.
 9. **Crouch tunnel** (south). Copied from the demo: 12 m long, 5 m wide inside, with a roof whose underside is 1.016 m up. You get through crouched, not standing.
-10. **Surf** (north). The demo's surf wedge, copied with the same local sizes and transforms. Two faces at 53.13° (rise 0.8 over run 0.6) meet in a ridge, and the wedge is 40 m long. Beside it stands an 8.94 m drop ledge, reached by 22 stairs (0.2032 m rise, 1.016 m deep).
+10. **Surf** (north). The demo's surf wedge, copied with the same local sizes and transforms. Two faces at 53.13° (rise 0.8 over run 0.6) meet in a ridge, and the wedge is 40 m long. Beside it stands an 8.94 m drop ledge, reached by 22 stairs (0.4064 m rise, 1.016 m deep; corrected 2026-11-25 from 0.2032, the stairs' centre height: 22 × 0.4064 = 8.9408).
 11. **Signs.** One Label3D per station: the station name and its key figure (texts below). Fixed, not billboard. 3 m up, facing the hub, text about 1 m tall. Each bhop block has its own smaller label (about 0.4 m) on its west face, facing the platform.
 12. **Look.** Every piece uses the grid texture, world-space triplanar, so one checker square is 1 m and the grid lines up across pieces. Each station type has its own tint (table below). The sky, environment and shadowed sun are copied from the demo. The crosshair is unchanged: a `UI/HUD/Crosshair` "+" label with the HUD theme.
 
@@ -51,7 +53,7 @@ Station positions (centres in x, z; m). Signs are part of each station.
 |---|---|---|---|
 | Hub pad | origin | −5 … 5 | −3 … 3 |
 | Strafe lane | west | −87.5 … −72.5 | −97 … 10 |
-| Bhop gaps | east | 18 … 77.53 | −21 … 21 |
+| Bhop gaps | east | 18 … 77.44 | −21 … 21 |
 | Surf | north | −17 … 12.2 | −80 … −24.2 |
 | Seams and edges | north-west | −65 … −27 | −56.6 … −25 |
 | Crouch tunnel | south | −48 … −42 | 25 … 37 |
@@ -66,7 +68,7 @@ Every row is a `CourseBox` (centre, size, rotation in degrees) unless it says ot
 
 **Stations/StrafeLane:** `WallWest` (−87, 11, −43.5) and `WallEast` (−73, 11, −43.5), each 1 × 22 × 107, lane material. `Lines/LineDDD` (one per d = 0, 10 … 100): a `MeshInstance3D` (not a CourseBox, no collision), 13 × 0.01 × 0.1 BoxMesh at (−80, 0.005, 10 − d), white unshaded. `Numbers/WestDDD` Label3D at (−86.49, 2, 10 − d), rotation y = 90. `Numbers/EastDDD` at (−73.51, 2, 10 − d), rotation y = −90. Text `d`.
 
-**Stations/Bhop:** `Step` (19, 0.15, 0), 2 × 0.3 × 42. `Platform` (40, 0.3, 0), 40 × 0.6 × 42. `Block400` … `Block600`: 6 × 0.6 × 6 at x = 63 + gap, y 0.3, z from the table (centres x = 70.80 / 71.73 / 72.66 / 73.60 / 74.53). All bhop material. Block labels `Label400` … `Label600` at (60 + gap − 0.01, 0.3, z), rotation y = −90, text "400" … "600".
+**Stations/Bhop:** `Step` (19, 0.15, 0), 2 × 0.3 × 42. `Platform` (40, 0.3, 0), 40 × 0.6 × 42. `Block400` … `Block600`: 6 × 0.6 × 6 at x = 63 + gap, y 0.3, z from the table (centres x = 70.73 / 71.73 / 72.66 / 73.60 / 74.44). All bhop material. Block labels `Label400` … `Label600` at (60 + gap − 0.01, 0.3, z), rotation y = −90, text "400" … "600".
 
 **Stations/Surf** at (0, 0, −60): copy the demo's `Surf` children (`RampLeft`, `RampRight`, `DropLedge`, `Stair01`–`Stair22` in `levels/test_course/test_course.tscn:195–346`) with their local transforms and sizes unchanged, each as a CourseBox. Ramps get the surf material, and the ledge and stairs get accent. (The demo group sat at y = 0.25 on a 0.25 m floor top. Here the group is at y = 0.)
 
@@ -190,7 +192,7 @@ Tolerances: heights and positions ±1 mm (the geometry is exact), angles ±0.1°
   - Surf:
     - Ray down at the midpoint of each face hits a normal 53.13° from up.
     - Ray down at the drop ledge centre hits 8.9408.
-    - Ray down at stair k's centre hits k · 0.2032 (k = 1 … 22).
+    - Ray down at stair k's centre hits k · 0.4064 (k = 1 … 22).
   - Strafe lane:
     - Ray down at a wall-top centre hits 22.
     - From (−80, 1, −43.5), rays toward −X and +X hit x = −86.5 and −73.5.
