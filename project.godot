@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Movement Aim Trainer"
-run/main_scene="uid://1irayfycq083"
+run/main_scene="res://levels/movement_course/movement_course.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 run/max_fps=240
 
