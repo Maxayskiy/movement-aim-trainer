@@ -59,6 +59,33 @@
 - 2026-11-25 (course): surf-ramp seams (rampbug) stay in #9 (comment added there).
 - 2026-11-25 (course): box hull on seams, ramp-to-floor edges and ramp crests is proven by rig tests (400 u/s across: no speed loss, no vertical bump) plus a playtest. If SUCC snags: stop and report, same rule as #8/#10.
 
+- 2026-11-26 (vault note): the user's Obsidian note "Movement aim trainer" is a live source of ideas (path in Intake below).
+- 2026-11-26: phase 2 (aim base) starts now, before the phase 1 gate. Tuning panel → #15; the gate playtest follows it.
+- 2026-11-26: the note's movement list replaces design.md's. Dropped: surfing, tap strafing, wall bounces, superglide. Added: sliding, double jump, down dash (slope conversion). design.md and roadmap.md updated; design.md also gains the note's aim items and a customisation section.
+- 2026-11-26: customisation is split. Dummy settings, basic crosshair, hitsounds → phase 2. Crosshair builder/import, hitsound import → phase 4. Surface looks and skybox → phase 6.
+- 2026-11-26: surfing is back in design.md (core movement). SUCC surf stays on, the course keeps its surf V-ramp, #9 Surf number tests stays open.
+- 2026-11-26: file issues only for the phase that is starting. Phase 2 filed as #16–#24; later phases wait in Intake.
+
+- 2026-11-26 (rifle #16): triaged vague (~half a day). Planning first in phase 2.
+- 2026-11-26 (rifle): the vault note now has two rifles, in shots per second (sps): Rifle1 4 sps default, customisable, hold to fire; Rifle2 10 sps default, tap only (no holding).
+- 2026-11-26 (rifle): new `fire` action on left mouse. Fires only while the mouse is captured; the click that recaptures after Esc doesn't fire.
+- 2026-11-26 (rifle): cadence carries the leftover tick fraction (10 sps at 128 Hz = gaps of 12/13 ticks, exact average). Taps obey the cooldown.
+- 2026-11-26 (rifle): perfect accuracy: no spread, recoil or move inaccuracy; shooting doesn't slow movement. Infinite ammo, no reload.
+- 2026-11-26 (rifle): ray from the eye through the screen centre; hits every solid body except the player, ignores areas. Range is infinite, no damage falloff (round 2 replaced the 1000 m slider).
+- 2026-11-26 (rifle): damage per shot = dps / sps, so dps stays the same when the fire rate changes. dps default 100, not a player slider, no range; the real dps is set in the balancing stage. Damage is a float, no rounding. The rifle calls `take_hit(damage)` on what it hits (if it has the method) and emits `shot_fired` (origin, direction, hit point, collider).
+- 2026-11-26 (rifle): keep the existing `+` crosshair (course scene `UI/HUD/Crosshair`); no new centre dot.
+- 2026-11-26 (rifle): debug hit marker: 8 cm red sphere, lasts 2 s, max 64, visible only with F3 debug on, cleared on respawn. No tracer.
+- 2026-11-26 (rifle): no shot sound, muzzle flash or view model → issue #25.
+- 2026-11-26 (rifle): #16 builds one rifle script with a `full_auto` export, tested both ways; the player carries Rifle1 only. Rifle2 + weapon switching → issue #26.
+- 2026-11-26 (rifle): Rifle1 fire rate slider: default 4 sps, range 1–20, step 0.5.
+- 2026-11-26 (rifle): the Implement chat checks with a screenshot that the `+` sits on the exact screen centre; if not, it adjusts only the label's offsets.
+- 2026-11-26 (rifle): design.md aim line updated to the two rifles, infinite range, damage = dps ÷ fire rate.
+- 2026-11-26 (rifle): with `full_auto` off, a click during the cooldown is dropped (no buffer); holding fires once. Grilling done.
+- 2026-11-26 (rifle): approach A + saved click aim. Shots fire on the 128 Hz tick. A click is latched in `_input` with the aim direction and on-screen (interpolated) camera position; the next tick casts from those. A tap the cooldown blocks is dropped with its saved aim. Held shots use the physics eye + current yaw/pitch. One `aim()` function returns origin + direction.
+- 2026-11-26 (rifle): FireTimer schedules held shots from when the last was due; after idle it restarts from the current tick, no catch-up burst. Rate capped at 128 sps (tick rate), clamped with a warning; under 1 clamped to 1.
+- 2026-11-26 (rifle): the game is offline single-player; no networking. Claims about how Source does hitscan were unverified: don't rely on them.
+- 2026-11-26 (rifle): probe facts (Godot 4.7.2 headless): mouse can't be captured headless; events stay in order, and accumulated input merges only back-to-back motion (a click splits it). Plan tests the order with real events and stops if it fails.
+
 - 2026-11-24: Naming follows AGENTS.md "Naming": every feature starts as a GitHub issue; plans, branches and reviews use the 3-digit issue number (`012-bhop`); commits use Conventional Commits with `(#N)`.
 - 2026-11-24: The roadmap stays broad. Phases set goals and gates; the specific features are chosen when each phase starts.
 - 2026-11-23: Learn first. The user learns Godot basics through the Teach chat before feature planning starts. Anything we implement, the user checks it in the Teach chat until they understand it.
@@ -71,10 +98,11 @@
   - Feature 2 **Debug overlay**: `workflow/plans/005-debug-overlay.md`, issue #5. **Done**: merged to main, issue closed 2026-11-25. Approach A: `DebugOverlay` CanvasLayer is a child of `player.tscn`; pure `BhopTracker` and `PerfSampler` classes hold the logic.
   - Feature 3 **Ground and jump number tests**: `workflow/plans/008-ground-jump-tests.md`, issue #8. **Done**: merged to main 2026-11-25 (merge commit lacked `Closes #8`, so the issue was still open on 2026-11-25). Approach A: literal expected numbers (computed offline, script in the plan's appendix). Rig `tests/helpers/movement_rig.gd` drives SUCC via `command` and records a per-tick trace; feature 4 reuses it. Doesn't depend on #5.
   - Feature 4 **Bhop and air-strafe tests**: `workflow/plans/010-bhop-strafe-tests.md`, issue #10. **Done**: merged to main via PR #11, issue closed 2026-11-25. Approach A: literal expected numbers (script in the plan's appendix); rig gains controlled steps (per-tick input from a Callable), new `PerfectStrafer` test helper. Depends on #8 (rig) being merged. Adds ~40 s of real-time ticks to check.ps1.
-  - Feature 5a **Hull and terrain tests**: `workflow/plans/012-hull-terrain-tests.md`, issue #12, approved 2026-11-25. Implemented on `feat/012-hull-terrain-tests` (d142ffc), not merged yet. Approach A: literal ledge limit 1.613 m (apex 1.143 + top air lift 0.47, appendix script); seam/edge pass rules; rig gains `add_box`, `add_ramp`, `with_floor`, pins step_height/ramp threshold/max floor angle. 6b failed as feared; rig now pins `max_floor_angle` 45° (amendment committed on the feature branch). Shipped value → #13.
-  - Bug **Player sticks on 45–50° slopes**: `workflow/plans/013-slope-stick.md`, issue #13, approved 2026-11-25. After #12. Walkable limit → Source's 45.573°.
-  - Feature 5b **Movement course**: not planned yet (decisions above). Slope station 44°/46° still straddles the new 45.57° limit.
-  - Feature 6: not planned yet.
+  - Feature 5a **Hull and terrain tests**: `workflow/plans/012-hull-terrain-tests.md`, issue #12. **Done**: merged, issue closed 2026-11-26. Approach A: literal ledge limit 1.613 m; rig pins `max_floor_angle` 45°.
+  - Bug **Player sticks on 45–50° slopes**: `workflow/plans/013-slope-stick.md`, issue #13. **Done**: merged, issue closed 2026-11-26. Walkable limit = Source's 45.573°.
+  - Feature 5b **Movement course**: `workflow/plans/014-movement-course.md`, issue #14. **Done**: merged, issue closed 2026-11-26. Hand-placed `CourseBox` pieces; bhop gaps retuned (400 → 7.73 m, 600 → 11.44 m).
+  - Feature 6 **In-game tuning panel**: issue #15, backlog, deferred 2026-11-26 (phase 2 first). The phase 1 gate playtest follows it.
+- **Aim base (phase 2)**: started 2026-11-26. Issues #16–#26, all backlog (not planned); #16 Hitscan rifle: `workflow/plans/016-hitscan-rifle.md`, **approved** 2026-11-26 (issue body rewritten from Behaviour); next is the Implement chat on `feat/016-hitscan-rifle`. #25 shot sound/view model and #26 Rifle2/weapon switching split out of #16. Proposed build order: #16 Hitscan rifle → #17 Static target dummy → #18 Hit feedback → #20 Aim stats and score → #19 Moving target dummy → #21 First aim drill (phase 2 gate) → #22 Raw input, sensitivity and FOV matching → #23 Laser weapon → #24 Crosshair settings. Not confirmed by the user yet.
 
 ## Docs written
 
@@ -84,18 +112,16 @@
 
 ## Open questions
 
-- #12 behaviour 6b failed in the Implement chat (2026-11-25): a player resting on 46° slides 0.000 m. Probe (scratch, headless): default 0.000 m; `floor_stop_on_slope` off only creeps 0.134 m (Godot strips vertical velocity on floor contact); `max_floor_angle` 45° (= ramp threshold) slides 11.3 m, 18.2 m/s after ~1.2 s. 44° stays still in all three. Decided 2026-11-25: #12's rig pins `max_floor_angle` 45° (plan amended, commit 0d5e646 on `feat/012-hull-terrain-tests`); the shipped value is bug issue #13 "Player sticks on 45–50° slopes".
-- 2026-11-25 (#13): Godot's 0.01 rad floor margin confirmed by probe (max 45/thr 45 leaves 45.3° stuck). Walkable limit = Source's acos(0.7) = 45.573°: `ramp_angle_threshold` 45.573°, `max_floor_angle` 45°. Approach 1: values only in `player.tscn` + rig pins match + `pin_angles` flag; linking into one slider → feature 6. Plan `workflow/plans/013-slope-stick.md`, approved 2026-11-25 (committed on main 772ba1d, not pushed). Starts after #12 is merged; branch `fix/013-slope-stick`.
-- Movement base feature 5b (course): next to plan (5a approved as #12). Ledges at 1.563 / 1.663 m (5a limit 1.613 m ± 5 cm).
+- Bhop balance: what does "balance it somehow" mean (speed cap, smaller gain at high speed, landing penalty, something else)? Decide after a playtest.
+- Grapple: rope swing, or stick into a surface and pull (Titanfall 2)?
+- Phase 3 order: suggested sliding → down dash → grapple. Not decided.
+- #8 is still open although merged (merge commit lacked `Closes #8`).
 
-## Backlog
+## Intake (from the vault note, not filed yet)
 
-The backlog moves to GitHub issues (see AGENTS.md "Naming"). `gh` is signed in as Maxayskiy (2026-11-24): file these as issues, then delete them from here. The movement gotchas below are now covered by issue #1, except the hull-snag and move_and_collide notes (features 5 / phase 3).
+Source: `C:\Users\maxay\Documents\obsidian stuff\Leo-main-2026\Movement aim trainer.md`, still being written. Re-read it each session for new items. File these as issues when their phase starts (decision 2026-11-26), then delete them here.
 
-- First real feature after learning: probably bhop + air strafing on the movement test course (the design doc's quality bar).
-- Movement gotchas. Put these in the first movement plan:
-  - Physics tick at 128 Hz (`physics/common/physics_ticks_per_second`). The project still uses the default 60.
-  - `Input.use_accumulated_input = false`, so mouse look reads every input event.
-  - Test SUCC's box hull on floor seams and ramp edges. It can snag there.
-  - Use `move_and_collide` (not only `move_and_slide`) for wall bounce, superglide and grapple, where we need the exact collision normal.
-  - SUCC's input actions (forward, back, left, right, jump, crouch, sprint) aren't defined in the Input Map yet. Godot warns about this on every boot.
+- Phase 3, movement techs: sliding; double jump; down dash with slope conversion (dash down into a slope, ricochet off at the matching angle); grapple (retracts on a button press); rocket jumping; bhop balance.
+- Phase 3 gotcha: use `move_and_collide` (not only `move_and_slide`) for grapple and down dash, where we need the exact collision normal.
+- Phase 4: crosshair builder and import; hitsound/killsound import.
+- Phase 6: wall/floor/ceiling looks (texture, colour, roughness, transparency, emission); skybox.
