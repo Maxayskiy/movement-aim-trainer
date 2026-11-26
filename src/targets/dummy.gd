@@ -24,10 +24,20 @@ var _shape: CapsuleShape3D
 var _mesh: CapsuleMesh
 var _material: StandardMaterial3D
 var _last_max_health: float = NAN
+## Last applied config sizes: the shape stores 32-bit floats, so comparing
+## against it would never match and would rewrite it every tick.
+var _last_width: float = NAN
+var _last_height: float = NAN
 
 @onready var _collision: CollisionShape3D = $Collision
 @onready var _mesh_instance: MeshInstance3D = $Mesh
 @onready var _label: Label3D = $HealthLabel
+
+
+func _init() -> void:
+	# Before the rifle (priority 0): a shot on the respawn tick must see the
+	# dummy back.
+	process_physics_priority = -1
 
 
 func _ready() -> void:
@@ -76,7 +86,9 @@ func _sync_config() -> void:
 	var radius: float = config.width / 2.0
 	var height: float = maxf(config.height, config.width)
 	var centre: Vector3 = Vector3(0.0, height / 2.0, 0.0)
-	if _shape.radius != radius or _shape.height != height:
+	if config.width != _last_width or config.height != _last_height:
+		_last_width = config.width
+		_last_height = config.height
 		# Set height first when growing so height never drops under 2 x radius.
 		_shape.height = maxf(height, _shape.height)
 		_shape.radius = radius

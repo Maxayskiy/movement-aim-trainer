@@ -226,6 +226,24 @@ func test_respawns_128_ticks_after_the_kill() -> void:
 	assert_eq(_wall.hits.size(), wall_hits, "not the wall")
 
 
+func test_held_shot_on_the_respawn_tick_hits_the_dummy() -> void:
+	# Review r1, finding 1: Rifle1's 4 shot intervals equal the 128-tick delay,
+	# so a held trigger fires on the respawn tick. The player (and its rifle)
+	# sits before the dummy in the tree.
+	await _standard_setup()
+	await _hold_fire(8)
+	var died: Array[Array] = _events_named("died")
+	var respawned: Array[Array] = _events_named("respawned")
+	assert_eq(died.size(), 1, "died once")
+	assert_eq(respawned.size(), 1, "respawned once")
+	var damaged: Array[Array] = _events_named("damaged")
+	assert_eq(damaged.size(), 5, "4 kill hits + the shot on the respawn tick")
+	if damaged.size() == 5 and respawned.size() == 1:
+		assert_eq(damaged[4][1], respawned[0][1], "hit on the respawn tick")
+		assert_almost_eq(damaged[4][4] as float, 75.0, HEALTH_TOL)
+	assert_eq(_wall.hits.size(), 3, "only the 3 shots while dead reach the wall")
+
+
 func test_player_respawn_leaves_dummies_alone() -> void:
 	await _standard_setup()
 	_dummy.take_hit(50.0)
@@ -338,6 +356,18 @@ func test_delay_live() -> void:
 	assert_eq(respawned.size(), 1)
 	if respawned.size() == 1:
 		assert_eq((respawned[0][1] as int) - kill_tick, 64)
+
+
+func test_unchanged_config_leaves_the_shape_alone() -> void:
+	# Review r1, finding 2: idle ticks must not rewrite the capsule.
+	var dummy: Dummy = _add_dummy(Vector3(0.0, 0.0, -10.0), _config())
+	await _ticks(2)
+	var changes: Array[int] = [0]
+	var count: Callable = func() -> void: changes[0] += 1
+	_capsule(dummy).changed.connect(count)
+	_mesh(dummy).changed.connect(count)
+	await _ticks(16)
+	assert_eq(changes[0], 0, "no shape or mesh changes in 16 idle ticks")
 
 
 func test_instances_dont_share() -> void:
