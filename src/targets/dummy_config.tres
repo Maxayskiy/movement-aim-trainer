@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="DummyConfig" format=3]
+
+[ext_resource type="Script" path="res://src/targets/dummy_config.gd" id="1_cfg"]
+
+[resource]
+script = ExtResource("1_cfg")
+width = 0.813
+height = 1.829
+max_health = 100.0
+respawn_delay = 1.0
+color = Color(1, 0.45, 0, 1)

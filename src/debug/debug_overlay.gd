@@ -3,6 +3,8 @@ extends CanvasLayer
 ## Developer overlay: a speedometer under the crosshair and a debug panel toggled with F3.
 ## Reads its parent SUCC through SUCC's public API.
 
+## Dummies find the overlay through this group: they aren't its siblings.
+const GROUP: StringName = &"debug_overlay"
 const NO_VALUE: String = "—"
 const KEY_LIT_ALPHA: float = 1.0
 const KEY_DIM_ALPHA: float = 0.3
@@ -44,6 +46,7 @@ var _physics_ms: float = 0.0
 
 
 func _ready() -> void:
+	add_to_group(GROUP)
 	tracker.max_chain_ground_ticks = max_chain_ground_ticks
 	sampler.interval = perf_refresh_interval
 	_apply_layout()
