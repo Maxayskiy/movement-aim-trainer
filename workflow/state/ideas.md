@@ -86,6 +86,20 @@
 - 2026-11-26 (rifle): the game is offline single-player; no networking. Claims about how Source does hitscan were unverified: don't rely on them.
 - 2026-11-26 (rifle): probe facts (Godot 4.7.2 headless): mouse can't be captured headless; events stay in order, and accumulated input merges only back-to-back motion (a click splits it). Plan tests the order with real events and stops if it fails.
 
+- 2026-11-26 (static dummy #17): triaged vague (~half a day).
+- 2026-11-26 (dummy): plain orange capsule, no head; one hit zone, no headshots (→ issue #27); default size = player hull 0.813 × 1.829 m, grows up from its feet.
+- 2026-11-26 (dummy): health 100 default (@export, not a player slider, set at balancing); dies at 0 → vanishes, collision off, overkill ignored; respawns same spot, full health, after 1.0 s (@export 0–10 s); no regen; player R leaves dummies alone.
+- 2026-11-26 (dummy): the player collides with dummies (solid, not passable).
+- 2026-11-26 (dummy): all dummies share one `DummyConfig` resource (width, height, health, respawn delay), live changes; #19 adds speed and gravity.
+- 2026-11-26 (dummy): new "Target range" station in the course; #21 gets its own arena.
+- 2026-11-26 (dummy): debug health label above each dummy, only with F3 on.
+- 2026-11-26 (dummy): signals `damaged(damage, health_left)`, `died`, `respawned` for #18/#20.
+- 2026-11-26 (dummy): respawn happens even if the player stands in the spot; the physics pushes the player out. Probe (Godot 4.7.2 headless, default engine, idle player, capsule appears on top): pushed out in 2 ticks (centred: 0.81 m sideways; 0.5 m offset: 0.31 m), velocity unchanged, stays on floor.
+- 2026-11-26 (dummy): standing on a dummy's head is fine as is. Width 0.3–3.0 m, height 0.5–4.0 m, step 0.01, height ≥ width. Size changes apply at once; new max health at next respawn (current capped); new delay from next death.
+- 2026-11-26 (dummy): target range in the empty north-east of the course: floor line, 5 dummies at 5/10/20/40/60 m staggered sideways, flat floor, sign "TARGET RANGE / 5–60 m".
+- 2026-11-26 (dummy): health label = whole number rounded up, white with dark outline, billboard, 0.3 m above the head. Colour = `color` in `DummyConfig` (not a player slider). Grilling done.
+- 2026-11-26 (dummy) fact: `tests/movement/test_movement_course.gd:66-84` requires every StaticBody3D under `Floor` and `Stations` to be a CourseBox, so dummies must sit outside `Stations`.
+
 - 2026-11-24: Naming follows AGENTS.md "Naming": every feature starts as a GitHub issue; plans, branches and reviews use the 3-digit issue number (`012-bhop`); commits use Conventional Commits with `(#N)`.
 - 2026-11-24: The roadmap stays broad. Phases set goals and gates; the specific features are chosen when each phase starts.
 - 2026-11-23: Learn first. The user learns Godot basics through the Teach chat before feature planning starts. Anything we implement, the user checks it in the Teach chat until they understand it.
@@ -102,7 +116,7 @@
   - Bug **Player sticks on 45–50° slopes**: `workflow/plans/013-slope-stick.md`, issue #13. **Done**: merged, issue closed 2026-11-26. Walkable limit = Source's 45.573°.
   - Feature 5b **Movement course**: `workflow/plans/014-movement-course.md`, issue #14. **Done**: merged, issue closed 2026-11-26. Hand-placed `CourseBox` pieces; bhop gaps retuned (400 → 7.73 m, 600 → 11.44 m).
   - Feature 6 **In-game tuning panel**: issue #15, backlog, deferred 2026-11-26 (phase 2 first). The phase 1 gate playtest follows it.
-- **Aim base (phase 2)**: started 2026-11-26. Issues #16–#26, all backlog (not planned); #16 Hitscan rifle: `workflow/plans/016-hitscan-rifle.md`, **approved** 2026-11-26 (issue body rewritten from Behaviour); next is the Implement chat on `feat/016-hitscan-rifle`. #25 shot sound/view model and #26 Rifle2/weapon switching split out of #16. Proposed build order: #16 Hitscan rifle → #17 Static target dummy → #18 Hit feedback → #20 Aim stats and score → #19 Moving target dummy → #21 First aim drill (phase 2 gate) → #22 Raw input, sensitivity and FOV matching → #23 Laser weapon → #24 Crosshair settings. Not confirmed by the user yet.
+- **Aim base (phase 2)**: started 2026-11-26. Issues #16–#26, all backlog (not planned); #16 Hitscan rifle: `workflow/plans/016-hitscan-rifle.md`, **Done**: merged to main, issue closed 2026-11-26. #17 Static target dummy: `workflow/plans/017-static-target-dummy.md`, **approved** 2026-11-26 (issue body rewritten from Behaviour); next is the Implement chat on `feat/017-static-target-dummy`. Approach B: pure `TargetHealth` (RefCounted, tick-based) + thin `Dummy` StaticBody3D; dummies under a new root `Targets` node; overlay found via a new `DebugOverlay.GROUP`. #25 shot sound/view model and #26 Rifle2/weapon switching split out of #16. Proposed build order: #16 Hitscan rifle → #17 Static target dummy → #18 Hit feedback → #20 Aim stats and score → #19 Moving target dummy → #21 First aim drill (phase 2 gate) → #22 Raw input, sensitivity and FOV matching → #23 Laser weapon → #24 Crosshair settings. Not confirmed by the user yet.
 
 ## Docs written
 
