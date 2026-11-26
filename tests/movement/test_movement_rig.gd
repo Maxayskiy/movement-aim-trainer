@@ -131,3 +131,71 @@ func test_controlled_step_sees_previous_tick() -> void:
 	]
 	await _rig.play(steps)
 	assert_eq(seen_sizes, [4, 5] as Array[int])
+
+
+func _ray_down(from: Vector3) -> Dictionary:
+	var space: PhysicsDirectSpaceState3D = _rig.get_viewport().get_world_3d().direct_space_state
+	var query: PhysicsRayQueryParameters3D = PhysicsRayQueryParameters3D.create(
+		from, from + Vector3.DOWN * 20.0
+	)
+	return space.intersect_ray(query)
+
+
+func _static_bodies() -> int:
+	var count: int = 0
+	for child: Node in _rig.get_children():
+		if child is StaticBody3D:
+			count += 1
+	return count
+
+
+func test_test_config_step_height() -> void:
+	assert_almost_eq(MovementRig.test_config().step_height, 0.45, 0.0001)
+
+
+func test_spawn_without_floor() -> void:
+	_rig.spawn(MovementRig.test_config(), Vector3(0.0, 0.01, 0.0), false)
+	assert_eq(_static_bodies(), 0, "no floor added")
+
+
+func test_spawn_pins_floor_angles() -> void:
+	var player: SUCC = _rig.spawn(MovementRig.test_config())
+	assert_almost_eq(rad_to_deg(player.ramp_angle_threshold), 45.0, 0.0001)
+	assert_almost_eq(rad_to_deg(player.max_floor_angle), 45.0, 0.0001)
+	assert_eq(_static_bodies(), 1, "default floor added")
+
+
+func test_add_box() -> void:
+	var size: Vector3 = Vector3(2.0, 0.6, 3.0)
+	var at: Vector3 = Vector3(5.0, 0.3, -4.0)
+	var body: StaticBody3D = _rig.add_box(size, at)
+	assert_eq(body.get_parent(), _rig)
+	var shape: CollisionShape3D = body.get_child(0) as CollisionShape3D
+	assert_not_null(shape)
+	if shape == null:
+		return
+	assert_eq((shape.shape as BoxShape3D).size, size)
+	assert_almost_eq(shape.global_position.distance_to(at), 0.0, 0.0001)
+	await get_tree().physics_frame
+	var hit: Dictionary = _ray_down(Vector3(5.0, 5.0, -4.0))
+	assert_false(hit.is_empty(), "ray hits the box")
+	if hit.is_empty():
+		return
+	assert_almost_eq((hit["position"] as Vector3).y, 0.6, 0.001)
+
+
+func test_add_ramp_30() -> void:
+	var low_edge: Vector3 = Vector3(1.0, 0.2, -2.0)
+	_rig.add_ramp(30.0, low_edge, 6.0, 4.0)
+	await get_tree().physics_frame
+	var at_edge: Dictionary = _ray_down(Vector3(1.0, 10.0, -2.0005))
+	var one_up: Dictionary = _ray_down(Vector3(1.0, 10.0, -3.0))
+	assert_false(at_edge.is_empty(), "ray hits at the low edge")
+	assert_false(one_up.is_empty(), "ray hits one metre up")
+	if at_edge.is_empty() or one_up.is_empty():
+		return
+	assert_almost_eq((at_edge["position"] as Vector3).y, 0.2, 0.001, "low edge height")
+	var rise: float = (one_up["position"] as Vector3).y - 0.2
+	assert_almost_eq(rise, tan(deg_to_rad(30.0)), 0.001, "rise per horizontal metre")
+	var normal: Vector3 = one_up["normal"]
+	assert_almost_eq(rad_to_deg(normal.angle_to(Vector3.UP)), 30.0, 0.1, "normal angle")
