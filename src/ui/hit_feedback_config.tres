@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="HitFeedbackConfig" format=3]
+
+[ext_resource type="Script" path="res://src/ui/hit_feedback_config.gd" id="1_cfg"]
+[ext_resource type="AudioStream" uid="uid://cdcd7krugjhlj" path="res://assets/audio/hitsound.wav" id="2_hit"]
+[ext_resource type="AudioStream" uid="uid://chyeuvwf3ikna" path="res://assets/audio/killsound.wav" id="3_kill"]
+
+[resource]
+script = ExtResource("1_cfg")
+marker_enabled = true
+marker_gap = 8.0
+marker_length = 8.0
+marker_thickness = 2.0
+marker_outline = 1.0
+marker_outline_color = Color(0.16, 0.16, 0.18, 1)
+marker_duration = 0.25
+hit_color = Color(1, 1, 1, 1)
+kill_color = Color(1, 0.15, 0.15, 1)
+hitsound_enabled = true
+killsound_enabled = true
+hitsound_volume = 100
+killsound_volume = 100
+max_voices = 8
+hitsound = ExtResource("2_hit")
+killsound = ExtResource("3_kill")

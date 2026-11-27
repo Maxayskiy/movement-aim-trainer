@@ -3,6 +3,8 @@ extends StaticBody3D
 ## Test target: a static box that records every take_hit call.
 
 var hits: Array[float] = []
+## What take_hit returns.
+var result: TargetHealth.Result = TargetHealth.Result.DAMAGED
 
 
 ## A box of the given size centred at position.
@@ -17,5 +19,6 @@ static func make(size: Vector3, position: Vector3) -> HitTarget:
 	return target
 
 
-func take_hit(damage: float) -> void:
+func take_hit(damage: float) -> TargetHealth.Result:
 	hits.append(damage)
+	return result
