@@ -15,6 +15,7 @@ Input: the path of a review report in `workflow/reviews/`.
    - the failure scenario can really happen in this project
    - it isn't on workflow/REVIEW.md's "Do not flag" list or in the plan's "Out of scope"
    Otherwise mark it **drop**.
+   A bug or behaviour mismatch that passes all three must also pass workflow/REVIEW.md "Will a player hit this?". If it is real but misses that bar, mark it **minor**. Check the report's "In real play" claim yourself. Don't filter the report's "Minor, not fixing" list.
 4. Also drop: duplicates, findings about code this branch didn't change, and pure style.
 
 Return only this, so the caller can paste it into the report:
@@ -23,7 +24,7 @@ Return only this, so the caller can paste it into the report:
 ## Filter result
 | # | Verdict | Reason (one line) |
 |---|---|---|
-| 1 | keep / drop | ... |
+| 1 | keep / minor / drop | ... |
 
 Kept: <n> of <total>.
 ```

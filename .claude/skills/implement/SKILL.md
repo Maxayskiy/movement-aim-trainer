@@ -19,12 +19,16 @@ You are the **Implement** chat. Build exactly one plan: `$ARGUMENTS`. Start this
 
 The build is done when every plan section is built, each behaviour line has a passing test, check.ps1 passes on the last commit, and the proof is shown.
 
+## Commits, push and PRs
+
+Running this skill is my request to commit: commit each step and each fix round without asking. Don't ask about or offer to push or open a pull request, including as a button. We merge locally (see Merge). After the build, the next steps are my playtest, then review.
+
 ## Fix round
 
 When I say "fix round R" (after a review wrote `workflow/reviews/NNN-slug-rR.md`):
 
 1. **Filter.** Run the `review-filter` subagent on the report. Append its "Filter result" section to the report file.
-2. **Show me** the kept findings and wait for my OK. I may drop more.
+2. **Show me** the kept findings, plus every minor item in one line each, and wait for my OK. I may drop more or promote a minor one. Minor items get no code or test changes.
 3. **Fix** each kept finding, test first where it is a bug, running check.ps1 after each fix.
 4. **Commit** the fixes together with the review report: `fix(scope): address review rR (#N)`.
 5. **Hand back:** what you fixed, and that round R+1 is next. After round 3, list what is still open for me to decide instead.

@@ -20,7 +20,7 @@ Run check.ps1 (command in AGENTS.md "Check your work") and note the result. If i
 Go through the diff against every plan section and every "Flag" rule in workflow/REVIEW.md. Trace each change to its callers. Check that each behaviour line in the plan has a test that would go red if the behaviour broke.
 
 ## 4. Verify
-For each finding, find a concrete failure scenario (inputs or state → wrong result). Drop any finding you can't back with one, and anything on workflow/REVIEW.md's "Do not flag" list.
+For each finding, find a concrete failure scenario (inputs or state → wrong result). Drop any finding you can't back with one, and anything on workflow/REVIEW.md's "Do not flag" list. Then apply workflow/REVIEW.md "Will a player hit this?": a bug or behaviour mismatch that misses that bar goes under "Minor, not fixing". For each one that passes, say how a player would hit it or why the damage is serious.
 
 ## 5. Write the report
 Write `workflow/reviews/NNN-slug-r<N>.md` (same `NNN-slug` as the plan):
@@ -37,6 +37,10 @@ Write `workflow/reviews/NNN-slug-r<N>.md` (same `NNN-slug` as the plan):
 1. **<bug | plan mismatch | rule break | nit>**: `file:line`
    - What's wrong: ...
    - Failure scenario: ...
+   - In real play: how a player hits it, or why the damage is serious (bugs and behaviour mismatches)
+
+## Minor, not fixing
+- `file:line`: what happens, and why a player won't hit it (or "None")
 
 ## Previous findings (round 2+)
 - <finding #>: fixed | not fixed | partly fixed
@@ -45,6 +49,6 @@ Write `workflow/reviews/NNN-slug-r<N>.md` (same `NNN-slug` as the plan):
 ready to merge | fix and run round <N+1> | round 3 done, open items go to the owner
 ```
 
-If there are no findings, write "No findings" and list what you checked.
+If there are no findings, write "No findings" and list what you checked. Minor items don't affect the verdict: with no findings it is "ready to merge". In later rounds, don't raise a minor item again unless the new diff makes it likelier or worse.
 
 The review is done when every plan section and every Flag rule has been checked against the diff, every finding carries a failure scenario, and the report file is written.
