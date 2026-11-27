@@ -23,6 +23,8 @@ var _config: HitFeedbackConfig
 var _dummy: Dummy
 ## Signal log: [name, tick].
 var _events: Array[Array] = []
+## fade.alpha at the moment of the last sound signal (the hit).
+var _alpha_at_hit: float = -1.0
 
 
 func before_each() -> void:
@@ -53,6 +55,7 @@ func after_all() -> void:
 
 func _on_sound(sound: String) -> void:
 	_events.append([sound, Engine.get_physics_frames()])
+	_alpha_at_hit = _feedback.fade.alpha(_now())
 
 
 func _add_dummy() -> void:
@@ -171,7 +174,7 @@ func test_hit() -> void:
 	assert_signal_emit_count(_feedback, "hitsound_played", 1)
 	assert_signal_emit_count(_feedback, "killsound_played", 0)
 	assert_false(_feedback.fade.killed)
-	assert_gt(_feedback.fade.alpha(_now()), 0.9)
+	assert_gt(_alpha_at_hit, 0.9, "alpha at the hit")
 	_assert_color(_view.color, _config.hit_color, "view colour")
 
 
@@ -287,6 +290,38 @@ func test_voices() -> void:
 	await _ticks(SHOT_GAP_TICKS)
 	await _click()
 	assert_eq(player.max_polyphony, 3)
+
+
+func test_second_hit_keeps_the_first_voice() -> void:
+	# A 1 s sound and 64 shots/s: the first voice still plays at the second hit.
+	var long_sound: AudioStreamWAV = AudioStreamWAV.new()
+	long_sound.mix_rate = 44100
+	var data: PackedByteArray = PackedByteArray()
+	data.resize(44100)
+	long_sound.data = data
+	_config.hitsound = long_sound
+	_rifle.config.shots_per_second = 64.0
+	await _dummy_setup()
+	var player: AudioStreamPlayer = _feedback.get_node("HitSound") as AudioStreamPlayer
+	_fire_event(true)
+	for i: int in 64:
+		await get_tree().physics_frame
+		if not _named("hit").is_empty():
+			break
+	var first: AudioStreamPlayback = player.get_stream_playback()
+	assert_not_null(first, "first voice")
+	for i: int in 64:
+		await get_tree().physics_frame
+		if _named("hit").size() >= 2:
+			break
+	_fire_event(false)
+	assert_eq(_named("hit").size(), 2, "two hits")
+	if first != null:
+		# A cut-off voice stops mixing, so its position stops moving.
+		var start: float = first.get_playback_position()
+		await wait_seconds(0.2)
+		var moved: float = first.get_playback_position() - start
+		assert_gt(moved, 0.1, "first voice still plays (moved %.3f s in 0.2 s)" % moved)
 
 
 func test_null_stream_is_silent_but_marker_shows() -> void:

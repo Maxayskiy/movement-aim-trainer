@@ -53,7 +53,9 @@ func _on_target_hit(_collider: Object, killed: bool) -> void:
 func _play(player: AudioStreamPlayer, stream: AudioStream, volume: int) -> bool:
 	if stream == null or volume <= 0:
 		return false
-	player.stream = stream
+	# Only on change: setting the stream stops every voice still playing.
+	if player.stream != stream:
+		player.stream = stream
 	player.volume_db = linear_to_db(volume / 100.0)
 	player.max_polyphony = config.max_voices
 	player.play()
