@@ -6,6 +6,7 @@ Review the diff against its plan file (workflow/plans/), AGENTS.md and this file
 - Bugs, wrong behaviour, or anything that doesn't match the plan.
 - Hard-coded feel values (should be @export or a setting).
 - Tests that were edited or deleted to make them pass.
+- Any change to check.ps1's real-time test list (`$realTimeTests`) without the owner's approval: moving a file there can hide a fixed-timestep bug.
 - Work outside the plan's scope.
 
 ## Will a player hit this?
