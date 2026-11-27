@@ -5,6 +5,16 @@
       "Read(./.env.*)",
       "Edit(./addons/**)",
       "Write(./addons/**)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git merge *)",
+      "Bash(git -C * push *)",
+      "Bash(git -C * merge *)",
+      "PowerShell(git push *)",
+      "PowerShell(git merge *)",
+      "PowerShell(git -C * push *)",
+      "PowerShell(git -C * merge *)"
     ]
   },
   "hooks": {

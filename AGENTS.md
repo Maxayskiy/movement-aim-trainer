@@ -6,6 +6,7 @@ First-person movement aim trainer in Godot 4.7.2+ (typed GDScript). Source-style
 - Run `powershell -NoProfile -ExecutionPolicy Bypass -File workflow/tools/check.ps1` after every step. It must pass before you say you're done.
 - Show proof: test output, plus a screenshot with debug overlays for anything visual.
 - Never edit or delete a test to make it pass. If you think a test is wrong, stop and tell me.
+- Changing check.ps1's real-time test list (`$realTimeTests`) is a test change: it needs my approval.
 - Godot is `$env:GODOT`, else `C:\Tools\Godot\4.7.2\Godot_v4.7.2-stable_win64_console.exe`. Call it `& $godot` below.
 - One test file: `& $godot --headless --path . -s res://addons/gut/gut_cmdln.gd -gtest=res://tests/<dir>/<file>.gd -gexit`
 - Run the game: `& $godot --path .`
