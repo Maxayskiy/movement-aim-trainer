@@ -7,6 +7,9 @@ extends Node
 
 ## Every shot. On a miss collider is null and hit_position is the far end of the ray.
 signal shot_fired(origin: Vector3, direction: Vector3, hit_position: Vector3, collider: Object)
+## Every shot whose take_hit returned DAMAGED (killed false) or KILLED (killed
+## true). Right after that shot's shot_fired, on the same tick.
+signal target_hit(collider: Object, killed: bool)
 
 ## VIEW: the on-screen camera position. PHYSICS_EYE: the eye at the body's physics position.
 enum OriginSource { VIEW, PHYSICS_EYE }
@@ -126,9 +129,21 @@ func _fire(shot: Aim) -> void:
 	var hit: Dictionary = _player.get_world_3d().direct_space_state.intersect_ray(query)
 	var hit_position: Vector3 = far_end
 	var collider: Object = null
+	var result: Variant = null
+	var called: bool = false
 	if not hit.is_empty():
 		hit_position = hit["position"] as Vector3
 		collider = hit["collider"] as Object
 		if collider != null and collider.has_method("take_hit"):
-			collider.call("take_hit", damage())
+			result = collider.call("take_hit", damage())
+			called = true
 	shot_fired.emit(shot.origin, shot.direction, hit_position, collider)
+	if not called:
+		return
+	if typeof(result) != TYPE_INT:
+		push_warning("Rifle: take_hit on %s returned a non-int: %s." % [collider, result])
+		return
+	if result == TargetHealth.Result.DAMAGED:
+		target_hit.emit(collider, false)
+	elif result == TargetHealth.Result.KILLED:
+		target_hit.emit(collider, true)

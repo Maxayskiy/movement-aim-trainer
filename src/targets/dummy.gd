@@ -59,15 +59,17 @@ func _ready() -> void:
 	_update_label()
 
 
-func take_hit(damage: float) -> void:
+## A rifle hit. Returns what it did: IGNORED (dead, or damage <= 0), DAMAGED or KILLED.
+func take_hit(damage: float) -> TargetHealth.Result:
 	var result: TargetHealth.Result = health.take(damage, Engine.get_physics_frames())
 	if result == TargetHealth.Result.IGNORED:
-		return
+		return result
 	damaged.emit(health.last_damage, health.health)
 	if result == TargetHealth.Result.KILLED:
 		visible = false
 		_collision.disabled = true
 		died.emit()
+	return result
 
 
 func _physics_process(_delta: float) -> void:

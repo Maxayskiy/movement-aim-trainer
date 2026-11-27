@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/hit_feedback.gd" id="1_fb"]
+[ext_resource type="Resource" path="res://src/ui/hit_feedback_config.tres" id="2_cfg"]
+[ext_resource type="Script" path="res://src/ui/hit_marker_view.gd" id="3_view"]
+
+[node name="HitFeedback" type="CanvasLayer"]
+layer = 2
+script = ExtResource("1_fb")
+config = ExtResource("2_cfg")
+
+[node name="Marker" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_view")
+
+[node name="HitSound" type="AudioStreamPlayer" parent="."]
+bus = &"Master"
+
+[node name="KillSound" type="AudioStreamPlayer" parent="."]
+bus = &"Master"
