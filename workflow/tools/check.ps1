@@ -1,4 +1,4 @@
-# One command that checks everything: format, lint, types, tests.
+# One command that checks everything: format, lint, complexity, types, tests.
 # Run from anywhere:
 #   powershell -NoProfile -ExecutionPolicy Bypass -File workflow/tools/check.ps1
 # Exits 0 when all checks pass, 1 on the first failure.
@@ -48,13 +48,32 @@ if ($gdFiles.Count -gt 0) {
     if ($LASTEXITCODE -ne 0) { Fail 'lint' }
 }
 
-# 3. Import: refresh Godot's cache so class_name scripts resolve.
+# 3. Complexity: fail on any function or class in src/ graded C or worse (score 11+).
+#    gdradon has no threshold flag and always exits 0 on high grades, so parse its
+#    output. Its line numbers are wrong, so print file, name, grade and score only.
+Step 'Complexity (gdradon, src/)'
+if (Test-Path 'src') {
+    $radon = @(& "$venv\gdradon.exe" cc src)
+    if ($LASTEXITCODE -ne 0) { Fail 'complexity' }
+    $file = ''
+    $complex = @()
+    foreach ($line in $radon) {
+        if ($line -match '^\S') { $file = $line.Trim() -replace '\\', '/'; continue }
+        if ($line -match '^\s+\w+\s+\d+:\d+\s+(\S+)\s+-\s+([A-F])\s+\((\d+)\)') {
+            if ('CDEF'.Contains($Matches[2])) { $complex += "${file}: $($Matches[1]) $($Matches[2]) ($($Matches[3]))" }
+        }
+    }
+    if ($complex.Count -gt 0) { Write-Host ($complex -join "`n"); Fail 'complexity' }
+}
+
+# 4. Import: refresh Godot's cache so class_name scripts resolve.
 Step 'Import (godot --import)'
 & $godot --headless --path $root --import --quiet
 if ($LASTEXITCODE -ne 0) { Fail 'import' }
 
-# 4. Types: parse every script, untested ones too. Untyped code is an error
-#    (project setting debug/gdscript/warnings/untyped_declaration = Error).
+# 5. Types: parse every script, untested ones too. Untyped code is an error
+#    (project setting debug/gdscript/warnings/untyped_declaration = Error), and so are
+#    unused variables, unused private members, unreachable code and shadowed variables.
 Step "Typecheck ($($gdFiles.Count) scripts, godot --check-only)"
 $bad = @()
 foreach ($f in $gdFiles) {
@@ -64,7 +83,7 @@ foreach ($f in $gdFiles) {
 }
 if ($bad.Count -gt 0) { Write-Host ("Errors in:`n  " + ($bad -join "`n  ")); Fail 'typecheck' }
 
-# 5. Tests (GUT), in two runs.
+# 6. Tests (GUT), in two runs.
 # Most tests only count physics frames, so they run with --fixed-fps: Godot steps
 # physics as fast as it can instead of in real time (about 15x faster).
 # The files below measure wall-clock time (fades, timers, sounds) and fail under
