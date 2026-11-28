@@ -71,17 +71,28 @@ Step 'Import (godot --import)'
 & $godot --headless --path $root --import --quiet
 if ($LASTEXITCODE -ne 0) { Fail 'import' }
 
-# 5. Types: parse every script, untested ones too. Untyped code is an error
+# 5. Types: compile every script, untested ones too. Untyped code is an error
 #    (project setting debug/gdscript/warnings/untyped_declaration = Error), and so are
 #    unused variables, unused private members, unreachable code and shadowed variables.
-Step "Typecheck ($($gdFiles.Count) scripts, godot --check-only)"
-$bad = @()
-foreach ($f in $gdFiles) {
-    $res = 'res://' + ($f.Substring($root.Length + 1) -replace '\\', '/')
-    & $godot --headless --path $root --check-only --script $res --quiet
-    if ($LASTEXITCODE -ne 0) { $bad += $res }
-}
+#    One Godot process loads every script (workflow/tools/typecheck_all.gd) instead of
+#    one --check-only process per script: same errors, about 2 s instead of 20.
+#    Loading a script runs its _static_init(), which can kill the process with exit
+#    code 0, so the step also needs the DONE line with the full count.
+Step "Typecheck ($($gdFiles.Count) scripts, one Godot process)"
+$listFile = Join-Path $root '.godot\typecheck-list.txt'
+$resPaths = @($gdFiles | ForEach-Object { 'res://' + ($_.Substring($root.Length + 1) -replace '\\', '/') })
+[IO.File]::WriteAllLines($listFile, [string[]]$resPaths)
+$probe = Join-Path $PSScriptRoot 'typecheck_all.gd'
+# Stdout is echoed as it comes and kept; Godot's error lines (stderr) print directly.
+$out = @(& $godot --headless --path $root -s $probe -- $listFile | ForEach-Object { Write-Host $_; $_ })
+$code = $LASTEXITCODE
+$bad = @($out | Where-Object { $_ -match '^TYPECHECK BAD (\S+)' } | ForEach-Object { $_ -replace '^TYPECHECK BAD ', '' })
+$done = @($out | Where-Object { $_ -match '^TYPECHECK DONE checked=(\d+)' })
+if ($done.Count -eq 0) { Write-Host 'Typecheck stopped early: no summary'; Fail 'typecheck' }
+$checked = [int]($done[-1] -replace '^TYPECHECK DONE checked=(\d+).*', '$1')
+if ($checked -ne $gdFiles.Count) { Write-Host "Typecheck stopped early: checked $checked of $($gdFiles.Count)"; Fail 'typecheck' }
 if ($bad.Count -gt 0) { Write-Host ("Errors in:`n  " + ($bad -join "`n  ")); Fail 'typecheck' }
+if ($code -ne 0) { Write-Host "Typecheck: Godot exit code $code"; Fail 'typecheck' }
 
 # 6. Tests (GUT), in two runs.
 # Most tests only count physics frames, so they run with --fixed-fps: Godot steps
