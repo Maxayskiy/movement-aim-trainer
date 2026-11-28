@@ -1,6 +1,6 @@
 # Agent workflow efficiency
 Issue: #28
-Status: changes 1–2 merged (89c3d61); First step trial pending
+Status: changes 1–2 merged (89c3d61); trial done on #29 review r1 (2026-11-27), change 4 kept; next: review.ps1 plan (after #30 and #31)
 
 Make the feature loop (Ideas → Implement → playtest → review → fix → merge) need fewer inputs and less idle time, without lowering quality. The owner still approves plans, playtests, OKs every fix round, and decides merges and pushes.
 
@@ -286,6 +286,49 @@ Estimates from one feature, not measured. The trial below measures them.
 4. Record per-step times and inputs for the whole feature.
 5. Keep change 4 if: the review rounds need 2 owner inputs or fewer each, Codex asks for nothing, and the report is as good as a Codex-chat review (compare the two finding lists side by side for the same round). Otherwise undo it and go back to Codex chats.
 6. If kept, build `review.ps1` and the Implement "Review" section, then change 3, then 5 and 6. Change 7 comes last.
+
+## Trial result (feature 029, review r1, 2026-11-27)
+
+**Verdict (owner): keep change 4.** Next: build #30, then #31, then a plan for `review.ps1` and the Implement "Review" section (step 6).
+
+### Times and inputs
+From Implement A. Build-step times come from git reflog and check log times (±10 s); review steps were timed directly.
+
+| Step | Clock | Duration | Owner inputs |
+|---|---|---|---|
+| Build (/implement: branch, 4 changes) | ~21:15:30–21:16:40 | ~1 min | 1 |
+| Baseline check.ps1 | –21:17:11 | ~40 s | — |
+| Planted-file tests and final green run | 21:17:11–21:20:29 | ~3.3 min | — |
+| Report and wait for "commit" | 21:20:30–~21:22:20 | ~2 min idle | — |
+| Commit | 21:22:28 | ~10 s | 1 |
+| Review request, read plan 028 | 21:22:59–21:23:10 | 11 s | 1 |
+| check.ps1 | 21:23:10–21:23:51 | 41 s | — |
+| codex exec r1 | 21:24:10–21:28:18 | 4.1 min | — |
+| Check tool list and changed files | 21:28:18–21:28:54 | 36 s | — |
+| review-filter | 21:29:00–21:29:22 | 22 s | — |
+| Wait for owner OK | 21:29:22–~21:33:30 | ~4 min idle | — |
+| Commit report | 21:33:40–21:33:51 | 11 s | 1 |
+| **Total** | ~21:15:30–21:33:51 | **~18 min** (~6 min waiting on owner) | **4** |
+
+- No playtest (nothing visual), so not directly comparable with 018 (~72 min, ~17 inputs).
+- check.ps1 took 40–41 s per run (change 1's target was about 45 s).
+- Owner decision after the filter: no code or test changes, no round 2 (its diff would be empty).
+
+### Keep bar (step 5)
+| Condition | Result |
+|---|---|
+| Review round needs 2 owner inputs or fewer | Met: 2 (the request and the decision). |
+| Codex asks for nothing | Met. |
+| Report as good as a Codex-chat review of the same round | Met. Compared with `workflow/reviews/029-code-quality-checks-r1-codexchat.md` (Codex desktop chat, same commit `fba28c0`). Both found the same three problems: the `_`-prefix plan mismatch, gdradon skipping a file it can't convert (a local named `from`), and quality-log.md not naming phase 2 as the first audit gate. They differ only in severity: exec rated the gdradon skip minor, the chat rated it a finding. The chat review also noted, as minor, that a missing gdradon launcher passes silently; exec didn't. The follow-ups are #31 and a rewording of plan 029. |
+
+### Ask rules (change 2)
+Test on `spike/merge-ask-test`, 21:40–21:42. Result pending: which of `git merge` and `git -C . merge` prompted, in Bash and PowerShell, isn't recorded yet.
+
+### /implement deviations seen in the trial
+- It waited for "commit" instead of committing on its own (+1 input, ~2 min idle).
+- It made one commit for the whole build instead of one per step.
+
+Both are against the /implement skill as written; no change to the skill yet. Watch for them in the next build.
 
 ## Open questions
 
