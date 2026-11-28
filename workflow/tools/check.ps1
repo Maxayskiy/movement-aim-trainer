@@ -30,7 +30,8 @@ function Step([string]$name) {
 }
 
 if (-not (Test-Path $godot)) { Write-Host "Godot not found at $godot (set `$env:GODOT)"; Fail 'setup' }
-if (-not (Test-Path "$venv\gdformat.exe")) { Write-Host 'gdtoolkit missing. Run: py -3 -m venv .venv; .venv\Scripts\python -m pip install -r workflow/tools/requirements.txt'; Fail 'setup' }
+$reinstallHint = 'Run: py -3 -m venv .venv; .venv\Scripts\python -m pip install -r workflow/tools/requirements.txt'
+if (-not (Test-Path "$venv\gdformat.exe")) { Write-Host "gdtoolkit missing. $reinstallHint"; Fail 'setup' }
 
 $gdFiles = @(Get-ChildItem $codeDirs -Recurse -Filter *.gd -File | ForEach-Object { $_.FullName })
 
@@ -51,19 +52,32 @@ if ($gdFiles.Count -gt 0) {
 # 3. Complexity: fail on any function or class in src/ graded C or worse (score 11+).
 #    gdradon has no threshold flag and always exits 0 on high grades, so parse its
 #    output. Its line numbers are wrong, so print file, name, grade and score only.
+#    It also exits 0 when it can't process a file (e.g. a Python keyword used as a
+#    name) and only says so on stderr, so any stderr text fails the step too.
 Step 'Complexity (gdradon, src/)'
 if (Test-Path 'src') {
-    $radon = @(& "$venv\gdradon.exe" cc src)
-    if ($LASTEXITCODE -ne 0) { Fail 'complexity' }
+    if (-not (Test-Path "$venv\gdradon.exe")) { Write-Host "gdradon not found at $venv\gdradon.exe. $reinstallHint"; Fail 'complexity' }
+    # 2>&1 merges the streams; stderr lines arrive as ErrorRecord objects.
+    $radon = @(& "$venv\gdradon.exe" cc src 2>&1)
+    $code = $LASTEXITCODE
     $file = ''
-    $complex = @()
+    $problems = @()
     foreach ($line in $radon) {
+        if ($line -is [Management.Automation.ErrorRecord]) {
+            # .Exception.Message, because ToString() names the exception type on blank lines.
+            $text = $line.Exception.Message
+            if ($text -match "^Cannot process file '(.+)' due to exception: (.+)$") {
+                $problems += "$($Matches[1] -replace '\\', '/'): not graded (gdradon: $($Matches[2]))"
+            } elseif ($text.Trim()) { $problems += $text }
+            continue
+        }
         if ($line -match '^\S') { $file = $line.Trim() -replace '\\', '/'; continue }
         if ($line -match '^\s+\w+\s+\d+:\d+\s+(\S+)\s+-\s+([A-F])\s+\((\d+)\)') {
-            if ('CDEF'.Contains($Matches[2])) { $complex += "${file}: $($Matches[1]) $($Matches[2]) ($($Matches[3]))" }
+            if ('CDEF'.Contains($Matches[2])) { $problems += "${file}: $($Matches[1]) $($Matches[2]) ($($Matches[3]))" }
         }
     }
-    if ($complex.Count -gt 0) { Write-Host ($complex -join "`n"); Fail 'complexity' }
+    if ($problems.Count -gt 0) { Write-Host ($problems -join "`n") }
+    if ($problems.Count -gt 0 -or $code -ne 0) { Fail 'complexity' }
 }
 
 # 4. Import: refresh Godot's cache so class_name scripts resolve.
