@@ -1,6 +1,6 @@
 # Agent workflow efficiency
 Issue: #28
-Status: approved (2026-11-27, after review rounds 1 and 2: workflow/reviews/draft-agent-efficiency-review.md)
+Status: changes 1–2 merged (89c3d61); First step trial pending
 
 Make the feature loop (Ideas → Implement → playtest → review → fix → merge) need fewer inputs and less idle time, without lowering quality. The owner still approves plans, playtests, OKs every fix round, and decides merges and pushes.
 
@@ -180,15 +180,15 @@ Savings are estimates from one feature (018).
 
 ### 4. Review from inside Implement, sandboxed (`review` command)
 - **Saves:** ~5 inputs per feature and the chat switching; only a few minutes of clock time (the gaps around reviews were 1–4 min). **Effort:** medium.
-- **Files:** new `workflow/tools/review.ps1`; `.claude/skills/implement/SKILL.md` (new "Review" section, fix round runs round R+1 by itself); `.agents/skills/review/SKILL.md` (two lines); `.claude/settings.json` (one allow rule, only if auto mode blocks the script).
+- **Files:** new `workflow/tools/review.ps1`; `workflow/tools/check.ps1` (green record and `-IfChanged`, below); `.claude/skills/implement/SKILL.md` (new "Review" section, fix round runs round R+1 by itself); `.agents/skills/review/SKILL.md` (two lines); `.claude/settings.json` (one allow rule, only if auto mode blocks the script).
 - **What, after the owner's playtest and "review":**
   1. `review.ps1 <plan> <round>` (plain code):
      - Check that tracked files are clean (`git diff --quiet HEAD`) and record `HEAD`.
-     - Run check.ps1.
+     - Run `check.ps1 -IfChanged` (green record, below) and keep the short hash it reports, from `Recorded green: <hash>` or `Already green at <hash>, skipped`. Fail if it fails or reports no hash.
      - Find `codex.exe` from `$env:CODEX`, else by searching `%LOCALAPPDATA%\OpenAI\Codex\bin\*\` (two hash folders exist; one has no codex.exe).
      - Run Codex with its hosted tools off and stdin closed. Codex arguments:
        `exec -s workspace-write -c approval_policy="never" --disable apps --disable plugins --disable computer_use --disable browser_use --disable in_app_browser --disable image_generation -c web_search='"disabled"' -c mcp_servers.node_repl.enabled=false --add-dir "$env:APPDATA\Godot" --add-dir "$env:LOCALAPPDATA\Godot" -C <repo> "<prompt>"`
-       The prompt: `$review <plan> round <R>. check.ps1 passed in Implement at <hash>; don't rerun format or lint; run the Godot tests yourself.`
+       The prompt: `$review <plan> round <R>. check.ps1 passed in Implement at <hash>; don't rerun format or lint; run the Godot tests yourself.` `<hash>` is the hash check.ps1 reported.
      - PowerShell has no `<` redirect, so start it with `Start-Process -FilePath $codex -ArgumentList … -RedirectStandardInput <empty temp file> -NoNewWindow -PassThru`, then `Wait-Process -Timeout 900`; on timeout, `Stop-Process` and fail loudly. (From Bash, `< /dev/null` closes stdin.)
      - After Codex ends, fail unless `HEAD` is unchanged and the only change in `git status --porcelain --untracked-files=all` (compared with before) is the new `workflow/reviews/NNN-slug-rR.md`. Leave `workflow/plans/` and `workflow/state/` out of the comparison: until change 6, Ideas may write there during the run.
   2. Implement runs review-filter, shows kept and minor findings with a link to the raw report, and **waits for the owner's OK** (decision 1).
@@ -196,6 +196,12 @@ Savings are estimates from one feature (018).
   - Review skill additions: before testing, confirm tracked files are clean and `HEAD` is the reviewed commit (outside: agent-skills `code-review-and-quality`). If a check.ps1 result for this commit is given, record it and run only the Godot steps.
   - Implement runs the script in the background and stays idle until it ends.
   - Note: Codex gets write access to `%APPDATA%\Godot`, the same app data the owner's editor uses.
+  - **Green record and skip (`check.ps1 -IfChanged`).** Moved here 2026-11-27 from plan 029 (old change 6), so it's built with review.ps1, the only caller that needs it. Reason: in the planned flow (build, commit, proof, playtest, "review"), review.ps1 would run check.ps1 again on the commit Implement just checked. That costs about 45 s per review round and finds nothing new. The check only matters if something was committed after the last green run, for example slider values tuned during the playtest.
+    - Behaviour: when check.ps1 passes with nothing uncommitted in tracked files and no untracked files under `src/` or `tests/`, it writes the current commit hash to `.godot/last-green` and prints `Recorded green: <short hash>`. If anything is uncommitted, or any step fails, it doesn't write the file and leaves any old one as it is. `check.ps1 -IfChanged` exits 0 at once, printing `Already green at <short hash>, skipped`, when `.godot/last-green` names the current commit and the tree is clean as above. Otherwise it runs normally.
+    - `.godot/` is already in `.gitignore`, and each worktree has its own `.godot/`, so records never mix between branches. Write the record only at the very end, after every step passed. "Clean" means `git status --porcelain --untracked-files=no` is empty and `git ls-files --others --exclude-standard -- src tests` is empty.
+    - Add a `-IfChanged` switch to check.ps1 (a `param([switch]$IfChanged)` block at the top). It's the only way the skip happens; a plain `check.ps1` always runs everything.
+    - /implement doesn't change for this: its "don't rerun unless code changed" rule stays a judgement call. It may use `-IfChanged`, but nothing requires it.
+    - Test (temporary planted files and commits only; undo them, never push them): after a passing run on a clean tree, `.godot/last-green` holds the current hash, and the run printed `Recorded green`. `check.ps1 -IfChanged` then prints `Already green at <hash>, skipped` and exits 0 in about a second. Plant an untracked `src/planted_x.gd`: `-IfChanged` runs fully, and the record isn't rewritten. Make a commit (any tracked change): `-IfChanged` runs fully. Make one step fail (for example a planted untyped `var x = 5` script): the old record stays unchanged. Then review.ps1 passes the reported hash in the Codex prompt (shown in the run's log).
 - **Notes:** Agentic Code Review, steps 2, 3 and 8 and "What stays your job" (course reading); Background Agents, steps 1, 3 and 8 and generator-verifier (course); Prompt Injection, three-part check (Claude); Instructions vs Permissions (Claude).
 - **Verified (scratch copy):**
   - `codex exec` (CLI 0.171) ran the review skill on feature 018 round 1 and wrote a valid report in 3.7 min, with the same two findings as the real r1 plus two more.
@@ -204,7 +210,7 @@ Savings are estimates from one feature (018).
   - `approval_policy="never"` takes effect (run header), and Codex can't commit (`.git` is read-only in the sandbox), per the review.
 - **Not verified:** the run in the real repo; whether `-c web_search='"disabled"'` keeps its quotes under PowerShell 5.1 (Codex should read it as a plain string either way; the first run's tool list must show no web tool); whether auto mode lets Claude run the script without a prompt; whether account tools would have run without approval (not tested on purpose).
 - **Risk:** the reviewer trusts Implement for format and lint (mechanical, already on the "Do not flag" list). A Codex CLI update renames flags; the script fails loudly. Don't use `--ignore-user-config`: per the review it drops project trust and falls back to a read-only sandbox.
-- **Test:** first step below.
+- **Test:** first step below, plus the green record test above.
 - **Undo:** revert; start reviews from a Codex chat again.
 
 ### 5. Notifications

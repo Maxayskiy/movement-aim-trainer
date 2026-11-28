@@ -44,7 +44,7 @@ No screenshot: nothing visual changes.
 
 ## Not in this plan
 - Typechecking only changed scripts plus their dependents, with a `-Full` switch for merges and phase gates (old plan 029 change 3; full text in `git show 35e361d:workflow/plans/029-code-quality-checks.md`). Dropped 2026-11-27: with one process the whole typecheck takes about 2 s, so the filter would save only about 1-2 s more, and it adds git logic, a switch and a risk of missing a dependent that is used only through a scene.
-- Skipping a repeat check on an already-green commit (old plan 029 change 6). Still #28's scope; not planned.
+- Skipping a repeat check on an already-green commit (old plan 029 change 6). Now in plan 028 change 4, built with review.ps1.
 - Faster GUT runs or any other check.ps1 step.
 
 ## Cost and noise
