@@ -5,7 +5,7 @@ Report-only code quality audits, one section per roadmap phase gate (newest at t
 
 ## How to run an audit
 
-Run it in a fresh chat at a phase gate.
+Run it in a fresh chat at a phase gate. The first audit runs at the end of phase 2, before phase 3 tech files start. Earlier gates (the phase 1 gate playtest, even if it's held later) don't start the log.
 
 1. **Scope.** The `src/` files changed since the commit named in the newest audit section: `git diff --name-only <hash> HEAD -- src`. If there is no audit section yet, all of `src/`.
 2. **Context.** Read AGENTS.md and every earlier finding marked `accepted`.
