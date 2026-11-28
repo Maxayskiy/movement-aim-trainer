@@ -34,6 +34,7 @@ What the developer and the agents see.
 5. /implement's Merge step runs `check.ps1 -Full` on main after merging. Each roadmap phase gate runs `check.ps1 -Full` and the quality audit.
 6. The quality audit is report-only and runs at each phase gate, in any fresh chat, from the "How to run an audit" section of `workflow/docs/quality-log.md`. It appends one dated section with the commit hash it audited. Each finding is one line with an id, `file:line`, the smell or check, the problem, a suggested fix, and `Status: open`. The owner changes each status to `plan #N` (it becomes an issue through /ideas) or `accepted`. The next audit doesn't report an accepted finding again unless the code around it changed, and it covers only `src/` files changed since the last section's commit. The first audit covers all of `src/` and runs at the end of phase 2, before phase 3 tech files start.
 7. When an audit finds the same pattern in 3 or more places, the owner decides it once (keep, replace, or make a helper) and one line goes into AGENTS.md. First candidate: how a node reads a live config resource each tick without warning every tick (the config-sync cache). This happens after the first audit, not in this build.
+8. When check.ps1 passes with nothing uncommitted in tracked files and no untracked files under `src/` or `tests/`, it writes the current commit hash and the mode (`default` or `full`) to `.godot/last-green` and prints `Recorded green: <short hash>`. If anything is uncommitted, or any step fails, it doesn't write the file and leaves any old one as it is. `check.ps1 -IfChanged` exits 0 at once, printing `Already green at <short hash>, skipped`, when `.godot/last-green` names the current commit and the tree is clean as above. Otherwise it runs normally. A `default` record satisfies a default run; only a `full` record satisfies `-Full -IfChanged`.
 
 ## Changes
 
@@ -95,9 +96,17 @@ Project checks (from the 2026-11-27 audit):
 ### 5. Write repeated patterns into AGENTS.md
 Behaviour 7. Not part of this build: it follows the first audit.
 
+### 6. Skip a repeat check on an already-green commit
+Added 2026-11-27. Reason: in the planned flow (build, commit, proof, playtest, "review"), plan 028 change 4's `review.ps1` runs check.ps1 again on the commit Implement just checked. That costs about 45 s per review round and finds nothing new. The check only matters if something was committed after the last green run, for example slider values tuned during the playtest.
+- check.ps1 writes `.godot/last-green` as Behaviour 8 says. `.godot/` is already in `.gitignore`, and each worktree has its own `.godot/`, so records never mix between branches. Write it only at the very end, after every step passed. "Clean" means `git status --porcelain --untracked-files=no` is empty and `git ls-files --others --exclude-standard -- src tests` is empty.
+- Add a `-IfChanged` switch (Behaviour 8). It's the only way the skip happens; a plain `check.ps1` always runs everything.
+- `review.ps1` doesn't exist yet (plan 028 change 4, still to be built). Add one line to 028 change 4: `review.ps1` calls `check.ps1 -IfChanged` instead of `check.ps1`, and passes the hash it reports to Codex as the commit check.ps1 passed at.
+- /implement doesn't change: its "don't rerun unless code changed" rule stays a judgement call. It may use `-IfChanged`, but nothing requires it.
+
 ## Files to touch
 - `project.godot`: four warning settings (change 1).
-- `workflow/tools/check.ps1`: `-Full` switch, changed-and-dependents typecheck list, complexity step (changes 2 and 3).
+- `workflow/tools/check.ps1`: `-Full` switch, changed-and-dependents typecheck list, complexity step (changes 2 and 3); `-IfChanged` switch and the `.godot/last-green` record (change 6).
+- `workflow/plans/028-agent-efficiency.md`: one line in change 4, `review.ps1` uses `check.ps1 -IfChanged` (change 6).
 - `.claude/skills/implement/SKILL.md`: Merge step uses `check.ps1 -Full` (change 3).
 - `workflow/docs/roadmap.md`: one sentence under the phase table (change 4).
 - `workflow/docs/quality-log.md`: new; header, how to run, smell list, project checks (change 4).
@@ -119,6 +128,7 @@ No test file changes. Every planted file or edit below is temporary: remove it, 
 7. **Full triggers.** A whitespace-only edit to `project.godot` makes default mode typecheck all scripts and print the reason. `check.ps1 -Full` with a clean tree typechecks all scripts.
 8. **Nothing changed.** On main with a clean tree (after the merge), default mode prints that no scripts changed and passes; `-Full` checks all.
 9. **Docs.** `workflow/docs/quality-log.md` has the how-to, 12 smells with the credit line and 3 project checks, and no audit section. The roadmap sentence and the /implement Merge line read as Behaviour 5 says.
+10. **Green record and skip.** After a passing default run on a clean tree, `.godot/last-green` holds the current hash and `default`, and the run printed `Recorded green`. `check.ps1 -IfChanged` then prints `Already green at <hash>, skipped` and exits 0 in about a second; `check.ps1 -Full -IfChanged` runs fully. Plant an untracked `src/planted_x.gd`: `-IfChanged` runs fully, and the record isn't rewritten. Make a commit (any tracked change): `-IfChanged` runs fully. Make one step fail (step 3's planted file): the old record stays unchanged.
 
 No screenshot: nothing visual changes.
 
@@ -139,4 +149,4 @@ No screenshot: nothing visual changes.
 - **Less intense:** change 1 only, with manual audits when something feels off. Move up to this plan when `src/` passes ~3,000 lines, the full typecheck takes over 60 s, the same finding appears twice, or phase 3 adds more than 5 tech files.
 
 ## Open questions
-- None. Decided 2026-11-27: gdradon grade B prints nothing; change 3 kept in its full form; the audit uses its own checklist (Pocock's 12 smells restated, plus 3 project checks), not improve-codebase-architecture; the first audit covers all of `src/`.
+- None. Decided 2026-11-27: gdradon grade B prints nothing; change 3 kept in its full form; the audit uses its own checklist (Pocock's 12 smells restated, plus 3 project checks), not improve-codebase-architecture; the first audit covers all of `src/`; change 6 added after approval, at the owner's request, so review.ps1 doesn't repeat a green check.
