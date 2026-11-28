@@ -26,6 +26,8 @@ The order we build things in and how much effort each part gets. Each phase has 
 
 Phases 3–6 can repeat in loops (depth → content → depth) for as long as the game gets better from it.
 
+Every phase gate also runs the quality audit in `workflow/docs/quality-log.md` (report-only; it blocks nothing).
+
 ## Choosing within a phase
 
 When a phase starts, pick its contents in the Ideas chat using these questions:
