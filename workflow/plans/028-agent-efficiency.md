@@ -245,6 +245,7 @@ Savings are estimates from one feature (018).
 - **Undo:** revert the roadmap change; go back to one feature at a time.
 
 ### 8. Faster typecheck (optional)
+- **Moved to #30** (2026-11-27): built on its own as `workflow/plans/030-faster-typecheck.md`. A probe there measured one process at about 2.4 s for 59 scripts.
 - **Saves:** ~15 s per check. **Effort:** small to medium.
 - **Files:** `workflow/tools/check.ps1`. One Godot process per script takes 19 s for 59 scripts; one process that loads every script would be faster.
 - **Notes:** Agent-Ready Codebases, "Fast checks beat slow ones" (course). **Verified:** the 19 s. **Not verified:** the faster version.

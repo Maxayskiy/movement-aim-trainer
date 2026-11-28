@@ -103,7 +103,7 @@ No screenshot: nothing visual changes.
 - No duplicate-code detector: no tool found that is known to work on GDScript.
 - No complexity grading of `tests/`.
 - Running the first audit, and change 4's AGENTS.md line: both happen at the phase 2 gate, after this merges.
-- Typecheck speed-ups. They are workflow speed and belong to #28: typechecking only changed scripts and their dependents, skipping a repeat check on an already-green commit, and plan 028 change 8 (one Godot process for the whole typecheck).
+- Typecheck speed-ups. They are workflow speed, not code quality: one Godot process for the whole typecheck is #30; skipping a repeat check on an already-green commit belongs to #28.
 
 ## Cost and noise
 - Setup: about 1-1.5 hours. Per feature: about 0.5 s more for gdradon; the four warnings add no time (the typecheck already runs). Per phase gate: one agent session for the audit.
